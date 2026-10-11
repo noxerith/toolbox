@@ -1,1 +1,1517 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <title>미니 도구 상자</title>
 
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;800&display=swap"
+      rel="stylesheet"
+    >
+
+    <style>
+      :root {
+        color-scheme: light;
+        --bg: #f4f5f7;
+        --surface: #ffffff;
+        --text: #17181c;
+        --muted: #666a75;
+        --line: #e1e3e9;
+        --accent: #d9480f;
+        --accent-ink: #ffffff;
+        --accent-soft: #ffeadb;
+        --ok: #157f3b;
+        --danger: #c5221f;
+        box-sizing: border-box;
+        padding-top: env(safe-area-inset-top, 0px);
+        padding-bottom: env(safe-area-inset-bottom, 0px);
+      }
+
+      @media (prefers-color-scheme: dark) {
+        :root:not([data-theme="light"]) {
+          color-scheme: dark;
+          --bg: #0c0c0e;
+          --surface: #151518;
+          --text: #f3f3f5;
+          --muted: #9b9da8;
+          --line: #27272d;
+          --accent: #ff8a3d;
+          --accent-ink: #1b0e04;
+          --accent-soft: #2b1a0e;
+          --ok: #4cc276;
+          --danger: #ff7b72;
+        }
+      }
+
+      :root[data-theme="dark"] {
+        color-scheme: dark;
+        --bg: #0c0c0e;
+        --surface: #151518;
+        --text: #f3f3f5;
+        --muted: #9b9da8;
+        --line: #27272d;
+        --accent: #ff8a3d;
+        --accent-ink: #1b0e04;
+        --accent-soft: #2b1a0e;
+        --ok: #4cc276;
+        --danger: #ff7b72;
+      }
+
+      html {
+        background: var(--bg);
+        -webkit-text-size-adjust: 100%;
+        scroll-padding-top: env(safe-area-inset-top, 0px);
+      }
+
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+      }
+
+      [hidden] {
+        display: none !important;
+      }
+
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--text);
+        font-family: 'Noto Sans KR', system-ui, -apple-system, 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif;
+        line-height: 1.55;
+        font-size: 16px;
+      }
+
+      .mono {
+        font-family: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+      }
+
+      .wrap {
+        max-width: 1040px;
+        margin: 0 auto;
+        padding: 0 16px 56px;
+      }
+
+      button,
+      input,
+      select,
+      textarea {
+        font: inherit;
+        color: inherit;
+      }
+
+      :focus-visible {
+        outline: 2px solid var(--accent);
+        outline-offset: 2px;
+      }
+
+      /* top bar */
+      .top {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 12px;
+        padding: 28px 0 6px;
+      }
+
+      h1 {
+        font-size: clamp(26px, 6.5vw, 40px);
+        font-weight: 800;
+        letter-spacing: -0.02em;
+        line-height: 1.15;
+        margin: 0;
+      }
+
+      .sub {
+        margin: 8px 0 0;
+        color: var(--muted);
+        font-size: 15px;
+      }
+
+      .icon-btn {
+        flex: none;
+        width: 44px;
+        height: 44px;
+        border-radius: 14px;
+        border: 1px solid var(--line);
+        background: var(--surface);
+        cursor: pointer;
+        display: grid;
+        place-items: center;
+        font-size: 18px;
+      }
+
+      /* search + chips */
+      .search {
+        position: relative;
+        margin: 18px 0 10px;
+      }
+
+      .search svg {
+        position: absolute;
+        left: 14px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--muted);
+        pointer-events: none;
+      }
+
+      .search input {
+        width: 100%;
+        height: 50px;
+        padding: 0 16px 0 44px;
+        border-radius: 14px;
+        border: 1px solid var(--line);
+        background: var(--surface);
+        font-size: 16px;
+      }
+
+      .search input::placeholder {
+        color: var(--muted);
+      }
+
+      .chips {
+        display: flex;
+        gap: 8px;
+        overflow-x: auto;
+        padding: 4px 0 14px;
+        scrollbar-width: none;
+      }
+
+      .chips::-webkit-scrollbar {
+        display: none;
+      }
+
+      .chip {
+        flex: none;
+        height: 40px;
+        padding: 0 16px;
+        border-radius: 999px;
+        cursor: pointer;
+        border: 1px solid var(--line);
+        background: transparent;
+        color: var(--muted);
+        font-weight: 500;
+      }
+
+      .chip[aria-pressed="true"] {
+        background: var(--accent);
+        border-color: var(--accent);
+        color: var(--accent-ink);
+        font-weight: 700;
+      }
+
+      .count {
+        color: var(--muted);
+        font-size: 14px;
+        margin: 0 0 10px;
+      }
+
+      /* cards */
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+        gap: 12px;
+      }
+
+      .card {
+        position: relative;
+        background: var(--surface);
+        border: 1px solid var(--line);
+        border-radius: 18px;
+      }
+
+      .card .open {
+        appearance: none;
+        background: none;
+        border: 0;
+        display: block;
+        width: 100%;
+        text-align: left;
+        padding: 16px;
+        border-radius: 18px;
+        cursor: pointer;
+        min-height: 150px;
+      }
+
+      .glyph {
+        width: 46px;
+        height: 46px;
+        border-radius: 13px;
+        display: grid;
+        place-items: center;
+        background: var(--accent-soft);
+        color: var(--accent);
+        font-weight: 800;
+        font-size: 17px;
+        letter-spacing: -0.02em;
+      }
+
+      .name-row {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-top: 14px;
+        flex-wrap: wrap;
+      }
+
+      .name {
+        font-size: 18px;
+        font-weight: 700;
+        letter-spacing: -0.01em;
+      }
+
+      .tag {
+        font-size: 12px;
+        color: var(--muted);
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        padding: 1px 9px;
+      }
+
+      .desc {
+        margin: 6px 0 0;
+        color: var(--muted);
+        font-size: 15px;
+      }
+
+      .star {
+        position: absolute;
+        top: 8px;
+        right: 8px;
+        width: 44px;
+        height: 44px;
+        border-radius: 12px;
+        border: 0;
+        background: transparent;
+        color: var(--muted);
+        cursor: pointer;
+        display: grid;
+        place-items: center;
+      }
+
+      .star[aria-pressed="true"] {
+        color: var(--accent);
+      }
+
+      .empty {
+        color: var(--muted);
+        padding: 36px 4px;
+        text-align: center;
+      }
+
+      /* tool view */
+      .back {
+        appearance: none;
+        background: none;
+        border: 0;
+        cursor: pointer;
+        color: var(--muted);
+        padding: 10px 0;
+        margin: 18px 0 0;
+        font-weight: 500;
+        min-height: 44px;
+      }
+
+      .tool-head h2 {
+        margin: 4px 0 0;
+        font-size: clamp(24px, 5.5vw, 32px);
+        font-weight: 800;
+        letter-spacing: -0.02em;
+      }
+
+      .tool-head p {
+        margin: 6px 0 18px;
+        color: var(--muted);
+      }
+
+      .panel {
+        background: var(--surface);
+        border: 1px solid var(--line);
+        border-radius: 18px;
+        padding: 16px;
+      }
+
+      .lbl {
+        display: block;
+        font-weight: 700;
+        font-size: 14px;
+        margin: 0 0 8px;
+      }
+
+      .lbl + * {
+        margin-top: 0;
+      }
+
+      textarea,
+      input[type="text"],
+      input[type="date"],
+      select {
+        width: 100%;
+        border: 1px solid var(--line);
+        background: var(--bg);
+        border-radius: 12px;
+        padding: 12px 14px;
+        font-size: 16px;
+      }
+
+      textarea {
+        resize: vertical;
+        min-height: 140px;
+        line-height: 1.5;
+      }
+
+      input[type="date"] {
+        height: 50px;
+      }
+
+      select {
+        width: auto;
+        height: 48px;
+        padding: 0 12px;
+      }
+
+      input[type="range"] {
+        width: 100%;
+        accent-color: var(--accent);
+        height: 36px;
+      }
+
+      input[type="color"] {
+        width: 54px;
+        height: 50px;
+        padding: 3px;
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        background: var(--bg);
+        flex: none;
+      }
+
+      input[type="checkbox"] {
+        width: 20px;
+        height: 20px;
+        accent-color: var(--accent);
+      }
+
+      .actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin: 12px 0 4px;
+        align-items: center;
+      }
+
+      .btn {
+        height: 48px;
+        padding: 0 18px;
+        border-radius: 12px;
+        border: 1px solid var(--line);
+        background: var(--surface);
+        cursor: pointer;
+        font-weight: 700;
+      }
+
+      .btn.primary {
+        background: var(--accent);
+        border-color: var(--accent);
+        color: var(--accent-ink);
+      }
+
+      .btn.small {
+        height: 40px;
+        padding: 0 14px;
+        font-weight: 500;
+      }
+
+      .status {
+        min-height: 24px;
+        margin: 10px 0 0;
+        font-size: 14px;
+      }
+
+      .status.ok {
+        color: var(--ok);
+      }
+
+      .status.err {
+        color: var(--danger);
+      }
+
+      .hint {
+        color: var(--muted);
+        font-size: 13px;
+        margin: 12px 0 0;
+      }
+
+      .field + .field {
+        margin-top: 16px;
+      }
+
+      .stats {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+        gap: 10px;
+        margin-top: 14px;
+      }
+
+      .stat {
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        padding: 12px 14px;
+        background: var(--bg);
+      }
+
+      .stat .k {
+        color: var(--muted);
+        font-size: 13px;
+      }
+
+      .stat .v {
+        font-size: 22px;
+        font-weight: 800;
+        font-variant-numeric: tabular-nums;
+        letter-spacing: -0.01em;
+      }
+
+      .two {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 12px;
+      }
+
+      .checks {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px 18px;
+        margin: 6px 0 14px;
+      }
+
+      .check {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        min-height: 44px;
+        cursor: pointer;
+      }
+
+      .result-line {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        justify-content: space-between;
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        padding: 12px 14px;
+        background: var(--bg);
+      }
+
+      .result-line .val {
+        font-size: 18px;
+        word-break: break-all;
+        flex: 1;
+        min-width: 0;
+      }
+
+      .color-in {
+        display: flex;
+        gap: 10px;
+      }
+
+      .swatch {
+        height: 84px;
+        border-radius: 16px;
+        border: 1px solid var(--line);
+        margin: 12px 0;
+      }
+
+      .val-row {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        padding: 8px 8px 8px 14px;
+        background: var(--bg);
+      }
+
+      .val-row + .val-row {
+        margin-top: 8px;
+      }
+
+      .val-row .k {
+        width: 42px;
+        flex: none;
+        color: var(--muted);
+        font-size: 13px;
+        font-weight: 700;
+      }
+
+      .val-row .v {
+        flex: 1;
+        min-width: 0;
+        word-break: break-all;
+      }
+
+      footer {
+        margin-top: 36px;
+        color: var(--muted);
+        font-size: 13px;
+      }
+
+      .toast {
+        position: fixed;
+        left: 50%;
+        bottom: calc(24px + env(safe-area-inset-bottom, 0px));
+        transform: translateX(-50%);
+        background: var(--text);
+        color: var(--bg);
+        padding: 10px 18px;
+        border-radius: 999px;
+        font-size: 14px;
+        font-weight: 700;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.15s;
+      }
+
+      .toast.show {
+        opacity: 1;
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        * {
+          transition: none !important;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="wrap">
+      <div class="top">
+        <div>
+          <h1>미니 도구 상자</h1>
+          <p class="sub">개발할 때, 일상에서 필요한 작은 도구를 한곳에 모았어요.</p>
+        </div>
+        <button
+          class="icon-btn"
+          id="theme"
+          type="button"
+          aria-label="밝은 화면과 어두운 화면 바꾸기"
+        >
+          ◐
+        </button>
+      </div>
+
+      <main>
+        <section id="home">
+          <div class="search">
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              aria-hidden="true"
+            >
+              <circle cx="11" cy="11" r="7"></circle>
+              <path d="M20 20l-3.5-3.5"></path>
+            </svg>
+            <input
+              id="q"
+              type="search"
+              placeholder="도구 이름이나 기능으로 검색"
+              autocomplete="off"
+              aria-label="도구 검색"
+            >
+          </div>
+
+          <div class="chips" id="chips" role="group" aria-label="카테고리"></div>
+          <p class="count" id="count" aria-live="polite"></p>
+          <div class="grid" id="grid"></div>
+        </section>
+
+        <section id="tool" hidden>
+          <button class="back" id="back" type="button">‹ 모든 도구</button>
+          <div class="tool-head">
+            <h2 id="tool-title"></h2>
+            <p id="tool-desc"></p>
+          </div>
+          <div class="panel" id="tool-body"></div>
+        </section>
+      </main>
+
+      <footer>입력한 내용은 이 브라우저 안에서만 처리되고 어디로도 전송되지 않아요.</footer>
+    </div>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+    <script>
+      (function () {
+        'use strict';
+
+        /* ---------- helpers ---------- */
+        const $ = (s, r) => (r || document).querySelector(s);
+        const $$ = (s, r) => Array.from((r || document).querySelectorAll(s));
+        const fmt = (n) => n.toLocaleString('ko-KR');
+
+        function lsGet(k) {
+          try {
+            return localStorage.getItem(k);
+          } catch (e) {
+            return null;
+          }
+        }
+
+        function lsSet(k, v) {
+          try {
+            localStorage.setItem(k, v);
+          } catch (e) {}
+        }
+
+        let toastTimer;
+
+        function toast(msg) {
+          const t = $('#toast');
+          t.textContent = msg;
+          t.classList.add('show');
+          clearTimeout(toastTimer);
+          toastTimer = setTimeout(() => t.classList.remove('show'), 1400);
+        }
+
+        async function copyText(text) {
+          try {
+            await navigator.clipboard.writeText(text);
+            return true;
+          } catch (e) {}
+
+          try {
+            const ta = document.createElement('textarea');
+            ta.value = text;
+            ta.style.cssText = 'position:fixed;opacity:0;top:0;left:0';
+            document.body.appendChild(ta);
+            ta.select();
+            const ok = document.execCommand('copy');
+            ta.remove();
+            return ok;
+          } catch (e) {
+            return false;
+          }
+        }
+
+        async function copyWithToast(text) {
+          toast(
+            (await copyText(text))
+              ? '복사했어요'
+              : '복사하지 못했어요. 직접 선택해서 복사해 주세요.'
+          );
+        }
+
+        function setStatus(el, msg, kind) {
+          el.textContent = msg || '';
+          el.className = 'status' + (kind ? ' ' + kind : '');
+        }
+
+        /* ---------- tools ----------
+           새 도구를 추가하려면 아래 TOOLS 배열에 객체 하나만 더하면 돼요.
+           { id, name, desc, cat, glyph, keys(검색용 단어), render(root) }
+        */
+
+        function renderCount(root) {
+          root.innerHTML = `
+            <label class="lbl" for="t">텍스트</label>
+            <textarea id="t" rows="8" placeholder="여기에 글을 붙여넣거나 입력하세요"></textarea>
+            <div class="stats" id="s"></div>
+            <div class="actions">
+              <button class="btn" id="clr" type="button">지우기</button>
+            </div>
+          `;
+
+          const t = $('#t', root);
+          const s = $('#s', root);
+
+          function update() {
+            const v = t.value;
+            const chars = Array.from(v).length;
+            const noSpace = Array.from(v.replace(/\s/g, '')).length;
+            const words = v.trim() ? v.trim().split(/\s+/).length : 0;
+            const lines = v ? v.split(/\r\n|\r|\n/).length : 0;
+            const bytes = new TextEncoder().encode(v).length;
+
+            const rows = [
+              ['글자 수 (공백 포함)', chars],
+              ['글자 수 (공백 제외)', noSpace],
+              ['단어 수', words],
+              ['줄 수', lines],
+              ['바이트 (UTF-8)', bytes],
+            ];
+
+            s.innerHTML = rows
+              .map(
+                (r) => `
+                  <div class="stat">
+                    <div class="k">${r[0]}</div>
+                    <div class="v">${fmt(r[1])}</div>
+                  </div>
+                `
+              )
+              .join('');
+          }
+
+          t.addEventListener('input', update);
+          $('#clr', root).addEventListener('click', () => {
+            t.value = '';
+            update();
+            t.focus();
+          });
+
+          update();
+        }
+
+        function renderJson(root) {
+          root.innerHTML = `
+            <label class="lbl" for="in">JSON 입력</label>
+            <textarea
+              id="in"
+              rows="8"
+              spellcheck="false"
+              placeholder='{"name":"홍길동","tags":["a","b"]}'
+            ></textarea>
+            <div class="status" id="st" aria-live="polite"></div>
+            <div class="actions">
+              <select id="ind" aria-label="들여쓰기">
+                <option value="2">공백 2칸</option>
+                <option value="4">공백 4칸</option>
+                <option value="tab">탭</option>
+              </select>
+              <button class="btn primary" id="fmt" type="button">보기 좋게 정리</button>
+              <button class="btn" id="min" type="button">한 줄로 압축</button>
+            </div>
+            <label class="lbl" for="out" style="margin-top:16px">결과</label>
+            <textarea id="out" rows="10" readonly spellcheck="false"></textarea>
+            <div class="actions">
+              <button class="btn" id="cp" type="button">결과 복사</button>
+              <button class="btn" id="clr" type="button">모두 지우기</button>
+            </div>
+          `;
+
+          const inp = $('#in', root);
+          const out = $('#out', root);
+          const st = $('#st', root);
+          const sel = $('#ind', root);
+
+          function run(minify) {
+            const src = inp.value.trim();
+
+            if (!src) {
+              setStatus(st, 'JSON을 입력해 주세요.', 'err');
+              out.value = '';
+              return;
+            }
+
+            try {
+              const obj = JSON.parse(src);
+              const ind = sel.value === 'tab' ? '\t' : Number(sel.value);
+              out.value = minify
+                ? JSON.stringify(obj)
+                : JSON.stringify(obj, null, ind);
+              setStatus(st, '올바른 JSON이에요.', 'ok');
+            } catch (e) {
+              out.value = '';
+              setStatus(st, 'JSON 형식이 올바르지 않아요: ' + e.message, 'err');
+            }
+          }
+
+          inp.addEventListener('input', () => {
+            const src = inp.value.trim();
+
+            if (!src) {
+              setStatus(st, '');
+              return;
+            }
+
+            try {
+              JSON.parse(src);
+              setStatus(st, '올바른 JSON이에요.', 'ok');
+            } catch (e) {
+              setStatus(st, 'JSON 형식이 올바르지 않아요: ' + e.message, 'err');
+            }
+          });
+
+          $('#fmt', root).addEventListener('click', () => run(false));
+          $('#min', root).addEventListener('click', () => run(true));
+          $('#cp', root).addEventListener('click', () => {
+            if (!out.value) {
+              toast('복사할 결과가 없어요');
+              return;
+            }
+
+            copyWithToast(out.value);
+          });
+
+          $('#clr', root).addEventListener('click', () => {
+            inp.value = '';
+            out.value = '';
+            setStatus(st, '');
+            inp.focus();
+          });
+        }
+
+        /* color */
+        function hexToRgb(h) {
+          h = h.replace('#', '');
+
+          if (h.length === 3) {
+            h = h.split('').map((c) => c + c).join('');
+          }
+
+          const n = parseInt(h, 16);
+          return [(n >> 16) & 255, (n >> 8) & 255, n & 255];
+        }
+
+        function rgbToHex(r, g, b) {
+          return (
+            '#' +
+            [r, g, b]
+              .map((v) => v.toString(16).padStart(2, '0'))
+              .join('')
+          );
+        }
+
+        function rgbToHsl(r, g, b) {
+          r /= 255;
+          g /= 255;
+          b /= 255;
+
+          const max = Math.max(r, g, b);
+          const min = Math.min(r, g, b);
+          const d = max - min;
+          let h = 0;
+          let s = 0;
+          const l = (max + min) / 2;
+
+          if (d !== 0) {
+            s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+
+            if (max === r) {
+              h = (g - b) / d + (g < b ? 6 : 0);
+            } else if (max === g) {
+              h = (b - r) / d + 2;
+            } else {
+              h = (r - g) / d + 4;
+            }
+
+            h *= 60;
+          }
+
+          return [Math.round(h) % 360, Math.round(s * 100), Math.round(l * 100)];
+        }
+
+        function hslToRgb(h, s, l) {
+          h = ((h % 360) + 360) % 360;
+          s /= 100;
+          l /= 100;
+
+          const c = (1 - Math.abs(2 * l - 1)) * s;
+          const x = c * (1 - Math.abs((h / 60) % 2 - 1));
+          const m = l - c / 2;
+          let r = 0;
+          let g = 0;
+          let b = 0;
+
+          if (h < 60) {
+            r = c;
+            g = x;
+          } else if (h < 120) {
+            r = x;
+            g = c;
+          } else if (h < 180) {
+            g = c;
+            b = x;
+          } else if (h < 240) {
+            g = x;
+            b = c;
+          } else if (h < 300) {
+            r = x;
+            b = c;
+          } else {
+            r = c;
+            b = x;
+          }
+
+          return [
+            Math.round((r + m) * 255),
+            Math.round((g + m) * 255),
+            Math.round((b + m) * 255),
+          ];
+        }
+
+        function parseColor(str) {
+          const s = str.trim().toLowerCase();
+          let m = s.match(/^#?([0-9a-f]{3}|[0-9a-f]{6})$/);
+
+          if (m) {
+            return hexToRgb(m[1]);
+          }
+
+          m = s.match(/^(?:rgb\()?\s*(\d{1,3})\s*[, ]\s*(\d{1,3})\s*[, ]\s*(\d{1,3})\s*\)?$/);
+
+          if (m) {
+            const v = [m[1], m[2], m[3]].map(Number);
+            return v.every((n) => n <= 255) ? v : null;
+          }
+
+          m = s.match(/^hsl\(\s*(\d{1,3})\s*[, ]\s*(\d{1,3})%?\s*[, ]\s*(\d{1,3})%?\s*\)$/);
+
+          if (m) {
+            const h = +m[1];
+            const sa = +m[2];
+            const li = +m[3];
+            return h <= 360 && sa <= 100 && li <= 100
+              ? hslToRgb(h, sa, li)
+              : null;
+          }
+
+          return null;
+        }
+
+        function renderColor(root) {
+          root.innerHTML = `
+            <label class="lbl" for="c">색상 코드</label>
+            <div class="color-in">
+              <input id="pick" type="color" value="#ff8a3d" aria-label="색상 고르기">
+              <input
+                id="c"
+                type="text"
+                value="#ff8a3d"
+                spellcheck="false"
+                autocapitalize="off"
+                autocomplete="off"
+                placeholder="#ff8a3d, rgb(255, 138, 61), hsl(24, 100%, 62%)"
+              >
+            </div>
+            <div class="status" id="st" aria-live="polite"></div>
+            <div class="swatch" id="sw"></div>
+            <div id="vals"></div>
+          `;
+
+          const pick = $('#pick', root);
+          const txt = $('#c', root);
+          const st = $('#st', root);
+          const sw = $('#sw', root);
+          const vals = $('#vals', root);
+
+          function show(rgb) {
+            const hex = rgbToHex(rgb[0], rgb[1], rgb[2]);
+            const hsl = rgbToHsl(rgb[0], rgb[1], rgb[2]);
+            sw.style.background = hex;
+            pick.value = hex;
+
+            const rows = [
+              ['HEX', hex],
+              ['RGB', `rgb(${rgb[0]}, ${rgb[1]}, ${rgb[2]})`],
+              ['HSL', `hsl(${hsl[0]}, ${hsl[1]}%, ${hsl[2]}%)`],
+            ];
+
+            vals.innerHTML = rows
+              .map(
+                (r) => `
+                  <div class="val-row">
+                    <span class="k">${r[0]}</span>
+                    <span class="v mono">${r[1]}</span>
+                    <button
+                      class="btn small cp"
+                      type="button"
+                      data-v="${r[1]}"
+                      aria-label="${r[0]} 값 복사"
+                    >복사</button>
+                  </div>
+                `
+              )
+              .join('');
+          }
+
+          function fromText() {
+            const rgb = parseColor(txt.value);
+
+            if (!rgb) {
+              setStatus(
+                st,
+                '인식할 수 없는 색상 코드예요. 예: #ff8a3d, rgb(255, 138, 61), hsl(24, 100%, 62%)',
+                'err'
+              );
+              return;
+            }
+
+            setStatus(st, '');
+            show(rgb);
+          }
+
+          txt.addEventListener('input', fromText);
+          pick.addEventListener('input', () => {
+            txt.value = pick.value;
+            setStatus(st, '');
+            show(hexToRgb(pick.value));
+          });
+
+          vals.addEventListener('click', (e) => {
+            const b = e.target.closest('.cp');
+            if (b) copyWithToast(b.dataset.v);
+          });
+
+          fromText();
+        }
+
+        /* random string */
+        function randInt(max) {
+          const lim = Math.floor(0x100000000 / max) * max;
+          const a = new Uint32Array(1);
+          let x;
+
+          do {
+            crypto.getRandomValues(a);
+            x = a[0];
+          } while (x >= lim);
+
+          return x % max;
+        }
+
+        function renderRandom(root) {
+          const SETS = {
+            upper: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ',
+            lower: 'abcdefghijklmnopqrstuvwxyz',
+            digit: '0123456789',
+            symbol: '!@#$%^&*()-_=+[]{};:,.?',
+          };
+
+          root.innerHTML = `
+            <label class="lbl" for="len">길이: <span id="lv">16</span>자</label>
+            <input id="len" type="range" min="8" max="64" value="16">
+            <div class="checks">
+              <label class="check"><input type="checkbox" data-set="upper" checked> 대문자</label>
+              <label class="check"><input type="checkbox" data-set="lower" checked> 소문자</label>
+              <label class="check"><input type="checkbox" data-set="digit" checked> 숫자</label>
+              <label class="check"><input type="checkbox" data-set="symbol" checked> 기호</label>
+            </div>
+            <div class="result-line">
+              <div class="val mono" id="res" aria-live="polite"></div>
+              <button class="btn small" id="cp" type="button">복사</button>
+            </div>
+            <div class="status" id="st"></div>
+            <div class="actions">
+              <button class="btn primary" id="gen" type="button">새로 만들기</button>
+            </div>
+            <p class="hint">브라우저의 보안 난수(crypto)로 만들어요.</p>
+          `;
+
+          const len = $('#len', root);
+          const lv = $('#lv', root);
+          const res = $('#res', root);
+          const st = $('#st', root);
+
+          function gen() {
+            lv.textContent = len.value;
+
+            const active = $$('input[data-set]:checked', root).map(
+              (c) => SETS[c.dataset.set]
+            );
+
+            if (!active.length) {
+              res.textContent = '';
+              setStatus(st, '문자 종류를 하나 이상 선택해 주세요.', 'err');
+              return;
+            }
+
+            setStatus(st, '');
+
+            const n = Number(len.value);
+            const all = active.join('');
+            const chars = [];
+
+            active.forEach((set) => chars.push(set[randInt(set.length)]));
+
+            while (chars.length < n) {
+              chars.push(all[randInt(all.length)]);
+            }
+
+            for (let i = chars.length - 1; i > 0; i--) {
+              const j = randInt(i + 1);
+              [chars[i], chars[j]] = [chars[j], chars[i]];
+            }
+
+            res.textContent = chars.join('');
+          }
+
+          len.addEventListener('input', gen);
+          $$('input[data-set]', root).forEach((c) => c.addEventListener('change', gen));
+          $('#gen', root).addEventListener('click', gen);
+          $('#cp', root).addEventListener('click', () => {
+            if (res.textContent) copyWithToast(res.textContent);
+          });
+
+          gen();
+        }
+
+        /* date diff */
+        function renderDate(root) {
+          const d = new Date();
+          const iso =
+            d.getFullYear() +
+            '-' +
+            String(d.getMonth() + 1).padStart(2, '0') +
+            '-' +
+            String(d.getDate()).padStart(2, '0');
+
+          root.innerHTML = `
+            <div class="two">
+              <div>
+                <label class="lbl" for="d1">시작일</label>
+                <input id="d1" type="date" value="${iso}">
+              </div>
+              <div>
+                <label class="lbl" for="d2">종료일</label>
+                <input id="d2" type="date" value="${iso}">
+              </div>
+            </div>
+            <div class="status" id="st" aria-live="polite"></div>
+            <div class="stats" id="s"></div>
+          `;
+
+          const d1 = $('#d1', root);
+          const d2 = $('#d2', root);
+          const st = $('#st', root);
+          const s = $('#s', root);
+          const parse = (v) => {
+            const p = v.split('-').map(Number);
+            return { y: p[0], m: p[1], d: p[2] };
+          };
+          const utc = (o) => Date.UTC(o.y, o.m - 1, o.d);
+
+          function calc() {
+            if (!d1.value || !d2.value) {
+              s.innerHTML = '';
+              setStatus(st, '두 날짜를 모두 선택해 주세요.', 'err');
+              return;
+            }
+
+            let a = parse(d1.value);
+            let b = parse(d2.value);
+            let swapped = false;
+
+            if (utc(a) > utc(b)) {
+              const t = a;
+              a = b;
+              b = t;
+              swapped = true;
+            }
+
+            setStatus(
+              st,
+              swapped ? '시작일이 종료일보다 늦어서 순서를 바꿔 계산했어요.' : ''
+            );
+
+            const days = Math.round((utc(b) - utc(a)) / 86400000);
+            let y = b.y - a.y;
+            let m = b.m - a.m;
+            let dd = b.d - a.d;
+
+            if (dd < 0) {
+              m--;
+              dd += new Date(Date.UTC(b.y, b.m - 1, 0)).getUTCDate();
+            }
+
+            if (m < 0) {
+              y--;
+              m += 12;
+            }
+
+            const rows = [
+              ['총 일수', fmt(days) + '일'],
+              ['주 단위', Math.floor(days / 7) + '주 ' + (days % 7) + '일'],
+              ['년·개월·일', y + '년 ' + m + '개월 ' + dd + '일'],
+            ];
+
+            s.innerHTML = rows
+              .map(
+                (r) => `
+                  <div class="stat">
+                    <div class="k">${r[0]}</div>
+                    <div class="v">${r[1]}</div>
+                  </div>
+                `
+              )
+              .join('');
+          }
+
+          d1.addEventListener('input', calc);
+          d2.addEventListener('input', calc);
+          calc();
+        }
+
+        const TOOLS = [
+          {
+            id: 'char-count',
+            name: '글자 수 세기',
+            cat: '텍스트',
+            glyph: '가',
+            keys: 'character count length words bytes 글자 단어 바이트 줄',
+            desc: '글자, 단어, 줄, 바이트 수를 바로 세어 줘요.',
+            render: renderCount,
+          },
+          {
+            id: 'json-format',
+            name: 'JSON 정리',
+            cat: '개발',
+            glyph: '{ }',
+            keys: 'json format pretty minify beautify 정리 압축',
+            desc: 'JSON을 보기 좋게 정리하거나 한 줄로 압축해요.',
+            render: renderJson,
+          },
+          {
+            id: 'color-convert',
+            name: '색상 코드 변환',
+            cat: '디자인',
+            glyph: '#',
+            keys: 'color hex rgb hsl converter 색상 컬러',
+            desc: 'HEX, RGB, HSL 색상 코드를 서로 바꿔 줘요.',
+            render: renderColor,
+          },
+          {
+            id: 'random-string',
+            name: '임의 문자열 생성',
+            cat: '개발',
+            glyph: '***',
+            keys: 'password random string generator 비밀번호 랜덤',
+            desc: '비밀번호로 쓸 수 있는 무작위 문자열을 만들어요.',
+            render: renderRandom,
+          },
+          {
+            id: 'date-diff',
+            name: '날짜 차이 계산',
+            cat: '유틸리티',
+            glyph: 'D',
+            keys: 'date difference days dday 날짜 일수 디데이',
+            desc: '두 날짜 사이가 며칠인지, 몇 개월인지 계산해요.',
+            render: renderDate,
+          },
+        ];
+
+        /* ---------- app state ---------- */
+        const CATS = ['전체', '즐겨찾기'].concat(Array.from(new Set(TOOLS.map((t) => t.cat))));
+        let favs = new Set();
+
+        try {
+          favs = new Set(JSON.parse(lsGet('toolbox:favs') || '[]'));
+        } catch (e) {}
+
+        const state = {
+          q: '',
+          cat: '전체',
+          current: null,
+        };
+
+        function saveFavs() {
+          lsSet('toolbox:favs', JSON.stringify(Array.from(favs)));
+        }
+
+        const STAR = (on) => `
+          <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
+            <path
+              d="M12 3.5l2.6 5.3 5.9.9-4.3 4.1 1 5.8L12 16.9 6.8 19.6l1-5.8-4.3-4.1 5.9-.9z"
+              fill="${on ? 'currentColor' : 'none'}"
+              stroke="currentColor"
+              stroke-width="1.6"
+              stroke-linejoin="round"
+            ></path>
+          </svg>
+        `;
+
+        function renderChips() {
+          $('#chips').innerHTML = CATS.map(
+            (c) => `
+              <button
+                class="chip"
+                type="button"
+                data-cat="${c}"
+                aria-pressed="${state.cat === c}"
+              >${c}</button>
+            `
+          ).join('');
+        }
+
+        function renderGrid() {
+          const q = state.q.trim().toLowerCase();
+          const list = TOOLS.filter((t) => {
+            if (state.cat === '즐겨찾기' && !favs.has(t.id)) return false;
+            if (state.cat !== '전체' && state.cat !== '즐겨찾기' && t.cat !== state.cat) {
+              return false;
+            }
+            if (
+              q &&
+              !(t.name + ' ' + t.desc + ' ' + t.cat + ' ' + t.keys)
+                .toLowerCase()
+                .includes(q)
+            ) {
+              return false;
+            }
+            return true;
+          });
+
+          $('#count').textContent =
+            q || state.cat !== '전체' ? `${list.length}개의 도구` : `도구 ${TOOLS.length}개`;
+
+          const grid = $('#grid');
+
+          if (!list.length) {
+            grid.innerHTML = `
+              <p class="empty" style="grid-column:1/-1">
+                ${
+                  state.cat === '즐겨찾기' && !q
+                    ? '즐겨찾기한 도구가 없어요. 카드 오른쪽 위의 별을 눌러 추가해 보세요.'
+                    : '찾는 도구가 없어요. 다른 단어로 검색해 보세요.'
+                }
+              </p>
+            `;
+            return;
+          }
+
+          grid.innerHTML = list
+            .map((t) => {
+              const on = favs.has(t.id);
+
+              return `
+                <article class="card">
+                  <button class="open" type="button" data-id="${t.id}">
+                    <div class="glyph mono">${t.glyph}</div>
+                    <div class="name-row">
+                      <span class="name">${t.name}</span>
+                      <span class="tag">${t.cat}</span>
+                    </div>
+                    <p class="desc">${t.desc}</p>
+                  </button>
+                  <button
+                    class="star"
+                    type="button"
+                    data-fav="${t.id}"
+                    aria-pressed="${on}"
+                    aria-label="${t.name} ${on ? '즐겨찾기에서 빼기' : '즐겨찾기에 추가'}"
+                  >${STAR(on)}</button>
+                </article>
+              `;
+            })
+            .join('');
+        }
+
+        function show() {
+          const t = TOOLS.find((x) => x.id === state.current);
+
+          if (!t) {
+            state.current = null;
+            $('#tool').hidden = true;
+            $('#home').hidden = false;
+            document.title = '미니 도구 상자';
+            renderGrid();
+            return;
+          }
+
+          $('#home').hidden = true;
+          $('#tool').hidden = false;
+          $('#tool-title').textContent = t.name;
+          $('#tool-desc').textContent = t.desc;
+
+          const body = $('#tool-body');
+          body.innerHTML = '';
+          t.render(body);
+          document.title = t.name + ' · 미니 도구 상자';
+          window.scrollTo(0, 0);
+        }
+
+        function go(id) {
+          state.current = id;
+
+          try {
+            location.hash = id ? '/' + id : '';
+          } catch (e) {}
+
+          show();
+        }
+
+        function idFromHash() {
+          const m = (location.hash || '').match(/^#\/([\w-]+)$/);
+          return m ? m[1] : null;
+        }
+
+        /* ---------- events ---------- */
+        $('#q').addEventListener('input', (e) => {
+          state.q = e.target.value;
+          renderGrid();
+        });
+
+        $('#chips').addEventListener('click', (e) => {
+          const b = e.target.closest('.chip');
+          if (!b) return;
+
+          state.cat = b.dataset.cat;
+          renderChips();
+          renderGrid();
+        });
+
+        $('#grid').addEventListener('click', (e) => {
+          const star = e.target.closest('.star');
+
+          if (star) {
+            const id = star.dataset.fav;
+            favs.has(id) ? favs.delete(id) : favs.add(id);
+            saveFavs();
+            renderGrid();
+            return;
+          }
+
+          const open = e.target.closest('.open');
+          if (open) go(open.dataset.id);
+        });
+
+        $('#back').addEventListener('click', () => go(null));
+
+        window.addEventListener('hashchange', () => {
+          const id = idFromHash();
+          if (id === state.current) return;
+
+          state.current = id;
+          show();
+        });
+
+        /* theme */
+        function applyTheme(v) {
+          document.documentElement.setAttribute('data-theme', v);
+        }
+
+        const savedTheme = lsGet('toolbox:theme');
+
+        if (savedTheme === 'light' || savedTheme === 'dark') {
+          applyTheme(savedTheme);
+        }
+
+        $('#theme').addEventListener('click', () => {
+          const root = document.documentElement;
+          const cur =
+            root.getAttribute('data-theme') ||
+            (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+          const next = cur === 'dark' ? 'light' : 'dark';
+          applyTheme(next);
+          lsSet('toolbox:theme', next);
+        });
+
+        /* start */
+        renderChips();
+        state.current = idFromHash();
+        show();
+      })();
+    </script>
+  </body>
+</html>
