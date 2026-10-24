@@ -1,675 +1,1687 @@
 <!doctype html>
 <html lang="ko">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>미니 도구 상자</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+KR:wght@400;500;700;800&display=swap" rel="stylesheet">
-<style>
-:root{
-  color-scheme: light;
-  --bg:#fafafa; --surface:#ffffff; --text:#18181b; --muted:#6b6b76; --line:#e4e4e7; --tag-bg:#f1f1f3;
-  --accent:#ea580c; --accent-ink:#ffffff; --accent-2:#c2410c; --accent-soft:#ffedd5; --accent-line:#fdba74;
-  --title-a:#d97706; --title-b:#ea580c;
-  --ok:#157f3b; --danger:#c5221f;
-  box-sizing:border-box;
-  padding-top:env(safe-area-inset-top,0px);
-  padding-bottom:env(safe-area-inset-bottom,0px);
-}
-@media (prefers-color-scheme: dark){
-  :root:not([data-theme="light"]){
-    color-scheme: dark;
-    --bg:#09090a; --surface:#101012; --text:#fafafa; --muted:#9a9aa4; --line:#202024; --tag-bg:#1c1c20;
-    --accent:#f97316; --accent-ink:#ffffff; --accent-2:#fb923c; --accent-soft:#2a190d; --accent-line:#3b2412;
-    --title-a:#fcd34d; --title-b:#f59e0b;
-    --ok:#4cc276; --danger:#ff7b72;
-  }
-}
-:root[data-theme="dark"]{
-  color-scheme: dark;
-  --bg:#09090a; --surface:#101012; --text:#fafafa; --muted:#9a9aa4; --line:#202024; --tag-bg:#1c1c20;
-  --accent:#f97316; --accent-ink:#ffffff; --accent-2:#fb923c; --accent-soft:#2a190d; --accent-line:#3b2412;
-  --title-a:#fcd34d; --title-b:#f59e0b;
-  --ok:#4cc276; --danger:#ff7b72;
-}
-html{ background:var(--bg); -webkit-text-size-adjust:100%; scroll-padding-top:env(safe-area-inset-top,0px); }
-*,*::before,*::after{ box-sizing:border-box; }
-[hidden]{ display:none !important; }
-body{
-  margin:0; background:var(--bg); color:var(--text);
-  font-family:'Inter','Noto Sans KR',system-ui,-apple-system,'Apple SD Gothic Neo','Malgun Gothic',sans-serif;
-  line-height:1.55; font-size:16px;
-}
-.mono{ font-family:ui-monospace,'SF Mono',Menlo,Consolas,monospace; }
-button,input,select,textarea{ font:inherit; color:inherit; }
-:focus-visible{ outline:2px solid var(--accent); outline-offset:2px; }
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <title>미니 도구 상자</title>
 
-/* ---------- top nav ---------- */
-.nav{ border-bottom:1px solid var(--line); }
-.nav-in{ max-width:1200px; margin:0 auto; padding:0 20px; height:76px; display:flex; align-items:center; gap:12px; }
-.brand{
-  appearance:none; background:none; border:0; padding:0; cursor:pointer; margin-right:auto;
-  display:flex; align-items:center; gap:10px; font-weight:700; font-size:17px; letter-spacing:-.01em; min-height:44px;
-}
-.brand-logo{
-  width:36px; height:36px; border-radius:10px; display:grid; place-items:center; color:#fff;
-  background:linear-gradient(135deg,#fb923c,#ea580c);
-}
-.brand-logo svg{ width:20px; height:20px; }
-.nav-search{
-  flex:1 1 auto; max-width:300px; height:44px; display:flex; align-items:center; gap:10px; padding:0 12px;
-  border:1px solid var(--line); border-radius:12px; background:var(--surface); color:var(--muted);
-}
-.nav-search:focus-within{ outline:2px solid var(--accent); outline-offset:2px; }
-.nav-search input{ flex:1; min-width:0; border:0; background:transparent; outline:none; font-size:16px; color:var(--text); }
-.nav-search input::placeholder{ color:var(--muted); }
-.nav-search kbd{
-  font:500 12px/1 'Inter',system-ui,sans-serif; background:var(--tag-bg); color:var(--muted);
-  border-radius:6px; padding:4px 7px;
-}
-.nav-link{
-  appearance:none; background:none; border:0; cursor:pointer; color:var(--muted);
-  padding:0 10px; min-height:44px; font-weight:500;
-}
-.nav-link:hover{ color:var(--text); }
-.icon-btn{
-  flex:none; width:44px; height:44px; border-radius:12px; border:0; background:transparent;
-  color:var(--muted); cursor:pointer; display:grid; place-items:center;
-}
-.icon-btn:hover{ color:var(--text); }
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+KR:wght@400;500;700;800&display=swap" rel="stylesheet">
 
-.wrap{ max-width:1200px; margin:0 auto; padding:0 20px 56px; }
+    <style>
+        :root {
+            color-scheme: dark;
+            --bg: #09090a;
+            --sf: #101012;
+            --tx: #fafafa;
+            --mu: #9a9aa4;
+            --ln: #202024;
+            --tg: #1c1c20;
+            --ac: #f97316;
+            --ai: #fff;
+            --a2: #fb923c;
+            --as: #2a190d;
+            --al: #3b2412;
+            --ta: #fcd34d;
+            --tb: #f59e0b;
+            --ok: #4cc276;
+            --er: #ff7b72;
+            box-sizing: border-box;
+            padding: env(safe-area-inset-top, 0px) 0 env(safe-area-inset-bottom, 0px);
+        }
 
-/* ---------- hero ---------- */
-.hero{ text-align:center; padding:clamp(40px,9vw,72px) 0 0; }
-.hero h1{ margin:0; font-size:clamp(38px,9vw,64px); font-weight:800; letter-spacing:-.035em; line-height:1.1; }
-.grad{
-  background:linear-gradient(90deg,var(--title-a),var(--title-b));
-  -webkit-background-clip:text; background-clip:text; color:transparent; -webkit-text-fill-color:transparent;
-}
-.count{ margin:18px 0 0; color:var(--muted); font-size:clamp(16px,3.6vw,20px); }
+        :root[data-theme=light] {
+            color-scheme: light;
+            --bg: #fafafa;
+            --sf: #fff;
+            --tx: #18181b;
+            --mu: #6b6b76;
+            --ln: #e4e4e7;
+            --tg: #f1f1f3;
+            --ac: #ea580c;
+            --a2: #c2410c;
+            --as: #ffedd5;
+            --al: #fdba74;
+            --ta: #d97706;
+            --tb: #ea580c;
+            --ok: #157f3b;
+            --er: #c5221f;
+        }
 
-/* ---------- chips ---------- */
-.chips{ display:flex; gap:10px; overflow-x:auto; padding:6px 2px 8px; margin:clamp(28px,6vw,44px) 0 24px; scrollbar-width:none; }
-.chips::-webkit-scrollbar{ display:none; }
-.chips .chip:first-child{ margin-left:auto; }
-.chips .chip:last-child{ margin-right:auto; }
-.chip{
-  flex:none; height:46px; padding:0 22px; border-radius:999px; cursor:pointer;
-  border:1px solid var(--line); background:var(--surface); color:var(--muted); font-weight:500; font-size:16px;
-}
-.chip:hover{ color:var(--text); }
-.chip[aria-pressed="true"]{
-  background:var(--accent); border-color:var(--accent); color:var(--accent-ink); font-weight:700;
-  box-shadow:0 6px 20px -8px var(--accent);
-}
+        html {
+            background: var(--bg);
+            -webkit-text-size-adjust: 100%;
+        }
 
-/* ---------- cards ---------- */
-.grid{ display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:20px; }
-.card{ position:relative; background:var(--surface); border:1px solid var(--line); border-radius:24px; }
-.card:hover{ border-color:var(--accent-line); }
-.card .open{
-  appearance:none; background:none; border:0; display:block; width:100%; height:100%;
-  text-align:left; padding:24px; border-radius:24px; cursor:pointer; min-height:210px;
-}
-.icon{
-  width:54px; height:54px; border-radius:16px; display:grid; place-items:center;
-  background:var(--accent-soft); border:1px solid var(--accent-line); color:var(--accent-2);
-}
-.icon svg{ width:26px; height:26px; }
-.name-row{ display:flex; align-items:center; justify-content:space-between; gap:10px; margin-top:22px; }
-.name{ font-size:20px; font-weight:700; letter-spacing:-.015em; line-height:1.3; }
-.tag{ flex:none; font-size:12px; color:var(--muted); background:var(--tag-bg); border-radius:999px; padding:3px 11px; }
-.desc{ margin:8px 0 0; color:var(--muted); font-size:16px; }
-.go{ display:inline-flex; align-items:center; gap:8px; margin-top:18px; color:var(--accent-2); font-weight:500; }
-.go svg{ width:17px; height:17px; }
-.star{
-  position:absolute; top:14px; right:14px; width:44px; height:44px; border-radius:12px;
-  border:0; background:transparent; color:var(--muted); cursor:pointer; display:grid; place-items:center;
-}
-.star[aria-pressed="true"]{ color:var(--accent); }
-.empty{ color:var(--muted); padding:36px 4px; text-align:center; }
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+        }
 
-/* ---------- tool view ---------- */
-#tool{ max-width:760px; margin:0 auto; }
-.back{
-  appearance:none; background:none; border:0; cursor:pointer; color:var(--muted);
-  padding:10px 0; margin:28px 0 0; font-weight:500; min-height:44px;
-}
-.back:hover{ color:var(--text); }
-.tool-head h1{ margin:4px 0 0; font-size:clamp(28px,6vw,38px); font-weight:800; letter-spacing:-.03em; line-height:1.2; }
-.tool-head p{ margin:8px 0 22px; color:var(--muted); }
-.panel{ background:var(--surface); border:1px solid var(--line); border-radius:24px; padding:20px; }
+        [hidden] {
+            display: none !important;
+        }
 
-.lbl{ display:block; font-weight:700; font-size:14px; margin:0 0 8px; }
-textarea,input[type=text],input[type=date],select{
-  width:100%; border:1px solid var(--line); background:var(--bg); border-radius:12px; padding:12px 14px; font-size:16px;
-}
-textarea{ resize:vertical; min-height:140px; line-height:1.5; }
-input[type=date]{ height:50px; }
-select{ width:auto; height:48px; padding:0 12px; }
-input[type=range]{ width:100%; accent-color:var(--accent); height:36px; }
-input[type=color]{ width:54px; height:50px; padding:3px; border:1px solid var(--line); border-radius:12px; background:var(--bg); flex:none; }
-input[type=checkbox]{ width:20px; height:20px; accent-color:var(--accent); }
+        body {
+            margin: 0;
+            background: var(--bg);
+            color: var(--tx);
+            font: 16px/1.55 'Inter', 'Noto Sans KR', system-ui, -apple-system, 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif;
+        }
 
-.actions{ display:flex; flex-wrap:wrap; gap:8px; margin:12px 0 4px; align-items:center; }
-.btn{
-  height:48px; padding:0 18px; border-radius:12px; border:1px solid var(--line);
-  background:var(--surface); cursor:pointer; font-weight:700;
-}
-.btn.primary{ background:var(--accent); border-color:var(--accent); color:var(--accent-ink); }
-.btn.small{ height:40px; padding:0 14px; font-weight:500; }
+        .mono,
+        .out {
+            font-family: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+        }
 
-.status{ min-height:24px; margin:10px 0 0; font-size:14px; }
-.status.ok{ color:var(--ok); }
-.status.err{ color:var(--danger); }
-.hint{ color:var(--muted); font-size:13px; margin:12px 0 0; }
+        button,
+        input,
+        select,
+        textarea {
+            font: inherit;
+            color: inherit;
+        }
 
-.stats{ display:grid; grid-template-columns:repeat(auto-fit,minmax(140px,1fr)); gap:10px; margin-top:14px; }
-.stat{ border:1px solid var(--line); border-radius:16px; padding:12px 14px; background:var(--bg); }
-.stat .k{ color:var(--muted); font-size:13px; }
-.stat .v{ font-size:22px; font-weight:800; font-variant-numeric:tabular-nums; letter-spacing:-.01em; }
+        :focus-visible {
+            outline: 2px solid var(--ac);
+            outline-offset: 2px;
+        }
 
-.two{ display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:12px; }
-.checks{ display:flex; flex-wrap:wrap; gap:8px 18px; margin:6px 0 14px; }
-.check{ display:flex; align-items:center; gap:8px; min-height:44px; cursor:pointer; }
-.result-line{ display:flex; gap:10px; align-items:center; justify-content:space-between; border:1px solid var(--line); border-radius:16px; padding:12px 14px; background:var(--bg); }
-.result-line .val{ font-size:18px; word-break:break-all; flex:1; min-width:0; }
+        .nav {
+            border-bottom: 1px solid var(--ln);
+        }
 
-.color-in{ display:flex; gap:10px; }
-.swatch{ height:84px; border-radius:16px; border:1px solid var(--line); margin:12px 0; }
-.val-row{ display:flex; align-items:center; gap:10px; border:1px solid var(--line); border-radius:16px; padding:8px 8px 8px 14px; background:var(--bg); }
-.val-row + .val-row{ margin-top:8px; }
-.val-row .k{ width:42px; flex:none; color:var(--muted); font-size:13px; font-weight:700; }
-.val-row .v{ flex:1; min-width:0; word-break:break-all; }
+        .nav-in {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            height: 76px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
 
-footer{ margin-top:40px; color:var(--muted); font-size:13px; text-align:center; }
+        .brand {
+            appearance: none;
+            background: none;
+            border: 0;
+            padding: 0;
+            cursor: pointer;
+            margin-right: auto;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 700;
+            font-size: 17px;
+            letter-spacing: -.01em;
+            min-height: 44px;
+        }
 
-.toast{
-  position:fixed; left:50%; bottom:calc(24px + env(safe-area-inset-bottom,0px)); transform:translateX(-50%);
-  background:var(--text); color:var(--bg); padding:10px 18px; border-radius:999px; font-size:14px; font-weight:700;
-  opacity:0; pointer-events:none; transition:opacity .15s;
-}
-.toast.show{ opacity:1; }
+        .logo {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            display: grid;
+            place-items: center;
+            color: #fff;
+            background: linear-gradient(135deg, #fb923c, #ea580c);
+        }
 
-@media (max-width:640px){
-  .nav-link{ display:none; }
-  .nav-search kbd{ display:none; }
-}
-@media (max-width:480px){
-  .brand-text{ display:none; }
-  .nav-in{ padding:0 14px; }
-  .wrap{ padding:0 14px 48px; }
-}
-@media (hover:none){ .nav-search kbd{ display:none; } }
-@media (prefers-reduced-motion: reduce){ *{ transition:none !important; } }
-</style>
+        .logo svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        .ns {
+            flex: 1 1 auto;
+            max-width: 300px;
+            height: 44px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 0 12px;
+            border: 1px solid var(--ln);
+            border-radius: 12px;
+            background: var(--sf);
+            color: var(--mu);
+        }
+
+        .ns:focus-within {
+            outline: 2px solid var(--ac);
+            outline-offset: 2px;
+        }
+
+        .ns input {
+            flex: 1;
+            min-width: 0;
+            border: 0;
+            background: transparent;
+            outline: none;
+            font-size: 16px;
+            color: var(--tx);
+        }
+
+        .ns input::placeholder {
+            color: var(--mu);
+        }
+
+        kbd {
+            font: 500 12px/1 'Inter', system-ui, sans-serif;
+            background: var(--tg);
+            color: var(--mu);
+            border-radius: 6px;
+            padding: 4px 7px;
+        }
+
+        .nl {
+            appearance: none;
+            background: none;
+            border: 0;
+            cursor: pointer;
+            color: var(--mu);
+            padding: 0 10px;
+            min-height: 44px;
+            font-weight: 500;
+        }
+
+        .ib {
+            flex: none;
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            border: 0;
+            background: transparent;
+            color: var(--mu);
+            cursor: pointer;
+            display: grid;
+            place-items: center;
+        }
+
+        .nl:hover,
+        .ib:hover,
+        .back:hover,
+        .chip:hover {
+            color: var(--tx);
+        }
+
+        .wrap {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px 56px;
+        }
+
+        .hero {
+            text-align: center;
+            padding: clamp(40px, 9vw, 72px) 0 0;
+        }
+
+        .hero h1 {
+            margin: 0;
+            font-size: clamp(38px, 9vw, 64px);
+            font-weight: 800;
+            letter-spacing: -.035em;
+            line-height: 1.1;
+        }
+
+        .grad {
+            background: linear-gradient(90deg, var(--ta), var(--tb));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .count {
+            margin: 18px 0 0;
+            color: var(--mu);
+            font-size: clamp(16px, 3.6vw, 20px);
+        }
+
+        .chips {
+            display: flex;
+            gap: 10px;
+            overflow-x: auto;
+            padding: 6px 2px 8px;
+            margin: clamp(28px, 6vw, 44px) 0 24px;
+            scrollbar-width: none;
+        }
+
+        .chips::-webkit-scrollbar {
+            display: none;
+        }
+
+        .chip:first-child {
+            margin-left: auto;
+        }
+
+        .chip:last-child {
+            margin-right: auto;
+        }
+
+        .chip {
+            flex: none;
+            height: 46px;
+            padding: 0 22px;
+            border-radius: 999px;
+            cursor: pointer;
+            border: 1px solid var(--ln);
+            background: var(--sf);
+            color: var(--mu);
+            font-weight: 500;
+        }
+
+        .chip[aria-pressed=true] {
+            background: var(--ac);
+            border-color: var(--ac);
+            color: var(--ai);
+            font-weight: 700;
+            box-shadow: 0 6px 20px -8px var(--ac);
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .card {
+            position: relative;
+            background: var(--sf);
+            border: 1px solid var(--ln);
+            border-radius: 24px;
+        }
+
+        .card:hover {
+            border-color: var(--al);
+        }
+
+        .open {
+            appearance: none;
+            background: none;
+            border: 0;
+            display: block;
+            width: 100%;
+            height: 100%;
+            text-align: left;
+            padding: 24px;
+            border-radius: 24px;
+            cursor: pointer;
+            min-height: 200px;
+        }
+
+        .icon {
+            width: 54px;
+            height: 54px;
+            border-radius: 16px;
+            display: grid;
+            place-items: center;
+            background: var(--as);
+            border: 1px solid var(--al);
+            color: var(--a2);
+        }
+
+        .icon svg {
+            width: 26px;
+            height: 26px;
+        }
+
+        .nr {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            margin-top: 22px;
+        }
+
+        .name {
+            font-size: 20px;
+            font-weight: 700;
+            letter-spacing: -.015em;
+            line-height: 1.3;
+        }
+
+        .tag {
+            flex: none;
+            font-size: 12px;
+            color: var(--mu);
+            background: var(--tg);
+            border-radius: 999px;
+            padding: 3px 11px;
+        }
+
+        .desc {
+            margin: 8px 0 0;
+            color: var(--mu);
+        }
+
+        .go {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 18px;
+            color: var(--a2);
+            font-weight: 500;
+        }
+
+        .go svg {
+            width: 17px;
+            height: 17px;
+        }
+
+        .star {
+            position: absolute;
+            top: 14px;
+            right: 14px;
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            border: 0;
+            background: transparent;
+            color: var(--mu);
+            cursor: pointer;
+            display: grid;
+            place-items: center;
+        }
+
+        .star[aria-pressed=true] {
+            color: var(--ac);
+        }
+
+        .empty {
+            color: var(--mu);
+            padding: 36px 4px;
+            text-align: center;
+        }
+
+        #tool {
+            max-width: 760px;
+            margin: 0 auto;
+        }
+
+        .back {
+            appearance: none;
+            background: none;
+            border: 0;
+            cursor: pointer;
+            color: var(--mu);
+            padding: 10px 0;
+            margin: 28px 0 0;
+            font-weight: 500;
+            min-height: 44px;
+        }
+
+        .th h1 {
+            margin: 4px 0 0;
+            font-size: clamp(28px, 6vw, 38px);
+            font-weight: 800;
+            letter-spacing: -.03em;
+            line-height: 1.2;
+        }
+
+        .th p {
+            margin: 8px 0 22px;
+            color: var(--mu);
+        }
+
+        .panel {
+            background: var(--sf);
+            border: 1px solid var(--ln);
+            border-radius: 24px;
+            padding: 20px;
+        }
+
+        .fs {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 0 12px;
+        }
+
+        .fld {
+            grid-column: 1 / -1;
+            margin-bottom: 14px;
+        }
+
+        .fld.h {
+            grid-column: auto;
+        }
+
+        .lbl {
+            display: block;
+            font-weight: 700;
+            font-size: 14px;
+            margin: 0 0 8px;
+        }
+
+        .rl {
+            margin: 6px 0 8px;
+        }
+
+        textarea,
+        input[type=text],
+        input[type=number],
+        input[type=date],
+        select {
+            width: 100%;
+            border: 1px solid var(--ln);
+            background: var(--bg);
+            border-radius: 12px;
+            padding: 12px 14px;
+            font-size: 16px;
+        }
+
+        input[type=number],
+        input[type=date],
+        select {
+            height: 50px;
+            padding-top: 0;
+            padding-bottom: 0;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 90px;
+            line-height: 1.5;
+        }
+
+        input[type=range] {
+            width: 100%;
+            accent-color: var(--ac);
+            height: 36px;
+        }
+
+        input[type=color] {
+            width: 54px;
+            height: 50px;
+            padding: 3px;
+            border: 1px solid var(--ln);
+            border-radius: 12px;
+            background: var(--bg);
+            flex: none;
+        }
+
+        input[type=checkbox] {
+            width: 20px;
+            height: 20px;
+            accent-color: var(--ac);
+        }
+
+        .check {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            min-height: 44px;
+            cursor: pointer;
+        }
+
+        .actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin: 2px 0 4px;
+        }
+
+        .btn {
+            height: 48px;
+            padding: 0 18px;
+            border-radius: 12px;
+            border: 1px solid var(--ln);
+            background: var(--sf);
+            cursor: pointer;
+            font-weight: 700;
+        }
+
+        .btn.primary {
+            background: var(--ac);
+            border-color: var(--ac);
+            color: var(--ai);
+        }
+
+        .btn.small {
+            height: 40px;
+            padding: 0 14px;
+            font-weight: 500;
+        }
+
+        .status {
+            min-height: 24px;
+            margin: 8px 0 0;
+            font-size: 14px;
+            color: var(--mu);
+        }
+
+        .status.ok {
+            color: var(--ok);
+        }
+
+        .status.err {
+            color: var(--er);
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 10px;
+            margin-top: 12px;
+        }
+
+        .stat {
+            border: 1px solid var(--ln);
+            border-radius: 16px;
+            padding: 12px 14px;
+            background: var(--bg);
+        }
+
+        .stat .k {
+            color: var(--mu);
+            font-size: 13px;
+        }
+
+        .stat .v {
+            font-size: 21px;
+            font-weight: 800;
+            font-variant-numeric: tabular-nums;
+            letter-spacing: -.01em;
+            word-break: break-all;
+        }
+
+        .color-in {
+            display: flex;
+            gap: 10px;
+        }
+
+        .swatch {
+            height: 84px;
+            border-radius: 16px;
+            border: 1px solid var(--ln);
+            margin: 12px 0;
+        }
+
+        .val-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border: 1px solid var(--ln);
+            border-radius: 16px;
+            padding: 8px 8px 8px 14px;
+            background: var(--bg);
+            margin-top: 8px;
+        }
+
+        .val-row .k {
+            width: 42px;
+            flex: none;
+            color: var(--mu);
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .val-row .v {
+            flex: 1;
+            min-width: 0;
+            word-break: break-all;
+        }
+
+        footer {
+            margin-top: 40px;
+            color: var(--mu);
+            font-size: 13px;
+            text-align: center;
+        }
+
+        .toast {
+            position: fixed;
+            left: 50%;
+            bottom: calc(24px + env(safe-area-inset-bottom, 0px));
+            transform: translateX(-50%);
+            background: var(--tx);
+            color: var(--bg);
+            padding: 10px 18px;
+            border-radius: 999px;
+            font-size: 14px;
+            font-weight: 700;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity .15s;
+        }
+
+        .toast.show {
+            opacity: 1;
+        }
+
+        @media (max-width: 640px) {
+            .nl,
+            kbd {
+                display: none;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .brand span:last-child {
+                display: none;
+            }
+
+            .nav-in {
+                padding: 0 14px;
+            }
+
+            .wrap {
+                padding: 0 14px 48px;
+            }
+        }
+
+        @media (hover: none) {
+            kbd {
+                display: none;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                transition: none !important;
+            }
+        }
+    </style>
+
+    <script>
+        var t;
+
+        try {
+            t = localStorage.getItem('toolbox:theme');
+        } catch (e) {}
+
+        document.documentElement.dataset.theme = t || (matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
+    </script>
 </head>
 <body>
-<header class="nav">
-  <div class="nav-in">
-    <button class="brand" id="brand" type="button" aria-label="미니 도구 상자 처음으로">
-      <span class="brand-logo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="2"/><rect x="14" y="3" width="7" height="7" rx="2"/><rect x="3" y="14" width="7" height="7" rx="2"/><rect x="14" y="14" width="7" height="7" rx="2"/></svg></span>
-      <span class="brand-text">미니 도구 상자</span>
-    </button>
-    <label class="nav-search">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
-      <input id="q" type="search" placeholder="검색..." autocomplete="off" aria-label="도구 검색">
-      <kbd aria-hidden="true">⌘K</kbd>
-    </label>
-    <button class="nav-link" id="navTools" type="button">도구</button>
-    <button class="icon-btn" id="theme" type="button" aria-label="밝은 화면과 어두운 화면 바꾸기">
-      <svg viewBox="0 0 24 24" width="21" height="21" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M12 3.5v17a8.5 8.5 0 0 0 0-17z" fill="currentColor"/></svg>
-    </button>
-  </div>
-</header>
+    <header class="nav">
+        <div class="nav-in">
+            <button class="brand" id="brand" type="button" aria-label="처음으로">
+                <span class="logo">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <rect x="3" y="3" width="7" height="7" rx="2" />
+                        <rect x="14" y="3" width="7" height="7" rx="2" />
+                        <rect x="3" y="14" width="7" height="7" rx="2" />
+                        <rect x="14" y="14" width="7" height="7" rx="2" />
+                    </svg>
+                </span>
+                <span>미니 도구 상자</span>
+            </button>
 
-<div class="wrap">
-  <main>
-    <section id="home">
-      <div class="hero">
-        <h1><span class="grad">인기</span> 도구</h1>
-        <p class="count" id="count" aria-live="polite"></p>
-      </div>
-      <div class="chips" id="chips" role="group" aria-label="카테고리"></div>
-      <div class="grid" id="grid"></div>
-    </section>
+            <label class="ns">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+                    <circle cx="11" cy="11" r="7" />
+                    <path d="M20 20l-3.5-3.5" />
+                </svg>
+                <input id="q" type="search" placeholder="검색..." autocomplete="off" aria-label="도구 검색">
+                <kbd aria-hidden="true">⌘K</kbd>
+            </label>
 
-    <section id="tool" hidden>
-      <button class="back" id="back" type="button">‹ 모든 도구</button>
-      <div class="tool-head">
-        <h1 id="tool-title"></h1>
-        <p id="tool-desc"></p>
-      </div>
-      <div class="panel" id="tool-body"></div>
-    </section>
-  </main>
-  <footer>입력한 내용은 이 브라우저 안에서만 처리되고 어디로도 전송되지 않아요.</footer>
-</div>
-<div class="toast" id="toast" role="status" aria-live="polite"></div>
+            <button class="nl" id="navTools" type="button">도구</button>
+            <button class="ib" id="theme" type="button" aria-label="밝은 화면과 어두운 화면 바꾸기">
+                <svg viewBox="0 0 24 24" width="21" height="21" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+                    <circle cx="12" cy="12" r="8.5" />
+                    <path d="M12 3.5v17a8.5 8.5 0 0 0 0-17z" fill="currentColor" />
+                </svg>
+            </button>
+        </div>
+    </header>
 
-<script>
-(function(){
-'use strict';
+    <div class="wrap">
+        <main>
+            <section id="home">
+                <div class="hero">
+                    <h1><span class="grad">인기</span> 도구</h1>
+                    <p class="count" id="count" aria-live="polite"></p>
+                </div>
+                <div class="chips" id="chips" role="group" aria-label="카테고리"></div>
+                <div class="grid" id="grid"></div>
+            </section>
 
-/* ---------- helpers ---------- */
-const $  = (s, r) => (r || document).querySelector(s);
-const $$ = (s, r) => Array.from((r || document).querySelectorAll(s));
-const fmt = n => n.toLocaleString('ko-KR');
+            <section id="tool" hidden>
+                <button class="back" id="back" type="button">‹ 모든 도구</button>
+                <div class="th">
+                    <h1 id="tt"></h1>
+                    <p id="td"></p>
+                </div>
+                <div class="panel" id="tb"></div>
+            </section>
+        </main>
 
-function lsGet(k){ try{ return localStorage.getItem(k); }catch(e){ return null; } }
-function lsSet(k,v){ try{ localStorage.setItem(k,v); }catch(e){} }
-
-let toastTimer;
-function toast(msg){
-  const t = $('#toast'); t.textContent = msg; t.classList.add('show');
-  clearTimeout(toastTimer); toastTimer = setTimeout(()=>t.classList.remove('show'), 1400);
-}
-async function copyText(text){
-  try{ await navigator.clipboard.writeText(text); return true; }catch(e){}
-  try{
-    const ta = document.createElement('textarea');
-    ta.value = text; ta.style.cssText = 'position:fixed;opacity:0;top:0;left:0';
-    document.body.appendChild(ta); ta.select();
-    const ok = document.execCommand('copy'); ta.remove(); return ok;
-  }catch(e){ return false; }
-}
-async function copyWithToast(text){
-  toast(await copyText(text) ? '복사했어요' : '복사하지 못했어요. 직접 선택해서 복사해 주세요.');
-}
-function setStatus(el, msg, kind){ el.textContent = msg || ''; el.className = 'status' + (kind ? ' ' + kind : ''); }
-
-/* ---------- icons ---------- */
-const ic = p => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${p}</svg>`;
-const ICONS = {
-  count:  ic('<path d="M4 7V5h16v2"/><path d="M12 5v14"/><path d="M9 19h6"/>'),
-  json:   ic('<path d="M8 4C6 4 5 5 5 7v2.5c0 1.2-.8 2.1-2 2.5 1.2.4 2 1.3 2 2.5V17c0 2 1 3 3 3"/><path d="M16 4c2 0 3 1 3 3v2.5c0 1.2.8 2.1 2 2.5-1.2.4-2 1.3-2 2.5V17c0 2-1 3-3 3"/>'),
-  color:  ic('<path d="M12 3a9 9 0 1 0 0 18c1.1 0 1.6-.8 1.6-1.6 0-.5-.2-.8-.5-1.2-.3-.4-.5-.7-.5-1.2 0-.9.7-1.6 1.6-1.6H16a5 5 0 0 0 5-5c0-4.4-4-7.4-9-7.4z"/><circle cx="7.5" cy="11" r="1"/><circle cx="10.5" cy="7" r="1"/><circle cx="15.5" cy="7.5" r="1"/>'),
-  random: ic('<path d="M12 4v16"/><path d="M5.2 8l13.6 8"/><path d="M18.8 8L5.2 16"/>'),
-  date:   ic('<rect x="3.5" y="5" width="17" height="15" rx="2.5"/><path d="M8 3v4M16 3v4M3.5 10h17"/>')
-};
-const ARROW = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>';
-
-/* ---------- tools ----------
-   새 도구를 추가하려면 아래 TOOLS 배열에 객체 하나만 더하면 돼요.
-   { id, name, desc, cat, icon, keys(검색용 단어), render(root) }            */
-
-function renderCount(root){
-  root.innerHTML = `
-    <label class="lbl" for="t">텍스트</label>
-    <textarea id="t" rows="8" placeholder="여기에 글을 붙여넣거나 입력하세요"></textarea>
-    <div class="stats" id="s"></div>
-    <div class="actions"><button class="btn" id="clr" type="button">지우기</button></div>`;
-  const t = $('#t', root), s = $('#s', root);
-  function update(){
-    const v = t.value;
-    const chars = Array.from(v).length;
-    const noSpace = Array.from(v.replace(/\s/g,'')).length;
-    const words = v.trim() ? v.trim().split(/\s+/).length : 0;
-    const lines = v ? v.split(/\r\n|\r|\n/).length : 0;
-    const bytes = new TextEncoder().encode(v).length;
-    const rows = [['글자 수 (공백 포함)',chars],['글자 수 (공백 제외)',noSpace],['단어 수',words],['줄 수',lines],['바이트 (UTF-8)',bytes]];
-    s.innerHTML = rows.map(r => `<div class="stat"><div class="k">${r[0]}</div><div class="v">${fmt(r[1])}</div></div>`).join('');
-  }
-  t.addEventListener('input', update);
-  $('#clr', root).addEventListener('click', () => { t.value=''; update(); t.focus(); });
-  update();
-}
-
-function renderJson(root){
-  root.innerHTML = `
-    <label class="lbl" for="in">JSON 입력</label>
-    <textarea id="in" rows="8" spellcheck="false" placeholder='{"name":"홍길동","tags":["a","b"]}'></textarea>
-    <div class="status" id="st" aria-live="polite"></div>
-    <div class="actions">
-      <select id="ind" aria-label="들여쓰기">
-        <option value="2">공백 2칸</option><option value="4">공백 4칸</option><option value="tab">탭</option>
-      </select>
-      <button class="btn primary" id="fmt" type="button">보기 좋게 정리</button>
-      <button class="btn" id="min" type="button">한 줄로 압축</button>
+        <footer>입력한 내용은 이 브라우저 안에서만 처리되고 어디로도 전송되지 않아요.</footer>
     </div>
-    <label class="lbl" for="out" style="margin-top:16px">결과</label>
-    <textarea id="out" rows="10" readonly spellcheck="false"></textarea>
-    <div class="actions">
-      <button class="btn" id="cp" type="button">결과 복사</button>
-      <button class="btn" id="clr" type="button">모두 지우기</button>
-    </div>`;
-  const inp = $('#in', root), out = $('#out', root), st = $('#st', root), sel = $('#ind', root);
-  function run(minify){
-    const src = inp.value.trim();
-    if(!src){ setStatus(st, 'JSON을 입력해 주세요.', 'err'); out.value=''; return; }
-    try{
-      const obj = JSON.parse(src);
-      const ind = sel.value === 'tab' ? '\t' : Number(sel.value);
-      out.value = minify ? JSON.stringify(obj) : JSON.stringify(obj, null, ind);
-      setStatus(st, '올바른 JSON이에요.', 'ok');
-    }catch(e){
-      out.value = '';
-      setStatus(st, 'JSON 형식이 올바르지 않아요: ' + e.message, 'err');
-    }
-  }
-  inp.addEventListener('input', () => {
-    const src = inp.value.trim();
-    if(!src){ setStatus(st, ''); return; }
-    try{ JSON.parse(src); setStatus(st, '올바른 JSON이에요.', 'ok'); }
-    catch(e){ setStatus(st, 'JSON 형식이 올바르지 않아요: ' + e.message, 'err'); }
-  });
-  $('#fmt', root).addEventListener('click', () => run(false));
-  $('#min', root).addEventListener('click', () => run(true));
-  $('#cp', root).addEventListener('click', () => {
-    if(!out.value){ toast('복사할 결과가 없어요'); return; }
-    copyWithToast(out.value);
-  });
-  $('#clr', root).addEventListener('click', () => { inp.value=''; out.value=''; setStatus(st,''); inp.focus(); });
-}
 
-/* color */
-function hexToRgb(h){
-  h = h.replace('#','');
-  if(h.length === 3) h = h.split('').map(c => c + c).join('');
-  const n = parseInt(h, 16);
-  return [(n >> 16) & 255, (n >> 8) & 255, n & 255];
-}
-function rgbToHex(r,g,b){ return '#' + [r,g,b].map(v => v.toString(16).padStart(2,'0')).join(''); }
-function rgbToHsl(r,g,b){
-  r/=255; g/=255; b/=255;
-  const max = Math.max(r,g,b), min = Math.min(r,g,b), d = max - min;
-  let h = 0, s = 0; const l = (max + min) / 2;
-  if(d !== 0){
-    s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
-    if(max === r) h = (g - b) / d + (g < b ? 6 : 0);
-    else if(max === g) h = (b - r) / d + 2;
-    else h = (r - g) / d + 4;
-    h *= 60;
-  }
-  return [Math.round(h) % 360, Math.round(s*100), Math.round(l*100)];
-}
-function hslToRgb(h,s,l){
-  h = ((h % 360) + 360) % 360; s/=100; l/=100;
-  const c = (1 - Math.abs(2*l - 1)) * s, x = c * (1 - Math.abs((h/60) % 2 - 1)), m = l - c/2;
-  let r=0,g=0,b=0;
-  if(h < 60){ r=c; g=x; } else if(h < 120){ r=x; g=c; } else if(h < 180){ g=c; b=x; }
-  else if(h < 240){ g=x; b=c; } else if(h < 300){ r=x; b=c; } else { r=c; b=x; }
-  return [Math.round((r+m)*255), Math.round((g+m)*255), Math.round((b+m)*255)];
-}
-function parseColor(str){
-  const s = str.trim().toLowerCase();
-  let m = s.match(/^#?([0-9a-f]{3}|[0-9a-f]{6})$/);
-  if(m) return hexToRgb(m[1]);
-  m = s.match(/^(?:rgb\()?\s*(\d{1,3})\s*[, ]\s*(\d{1,3})\s*[, ]\s*(\d{1,3})\s*\)?$/);
-  if(m){
-    const v = [m[1],m[2],m[3]].map(Number);
-    return v.every(n => n <= 255) ? v : null;
-  }
-  m = s.match(/^hsl\(\s*(\d{1,3})\s*[, ]\s*(\d{1,3})%?\s*[, ]\s*(\d{1,3})%?\s*\)$/);
-  if(m){
-    const h = +m[1], sa = +m[2], li = +m[3];
-    return (h <= 360 && sa <= 100 && li <= 100) ? hslToRgb(h, sa, li) : null;
-  }
-  return null;
-}
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
-function renderColor(root){
-  root.innerHTML = `
-    <label class="lbl" for="c">색상 코드</label>
-    <div class="color-in">
-      <input id="pick" type="color" value="#ff8a3d" aria-label="색상 고르기">
-      <input id="c" type="text" value="#ff8a3d" spellcheck="false" autocapitalize="off" autocomplete="off" placeholder="#ff8a3d, rgb(255, 138, 61), hsl(24, 100%, 62%)">
-    </div>
-    <div class="status" id="st" aria-live="polite"></div>
-    <div class="swatch" id="sw"></div>
-    <div id="vals"></div>`;
-  const pick = $('#pick', root), txt = $('#c', root), st = $('#st', root), sw = $('#sw', root), vals = $('#vals', root);
-  function show(rgb){
-    const hex = rgbToHex(rgb[0], rgb[1], rgb[2]);
-    const hsl = rgbToHsl(rgb[0], rgb[1], rgb[2]);
-    sw.style.background = hex;
-    pick.value = hex;
-    const rows = [
-      ['HEX', hex],
-      ['RGB', `rgb(${rgb[0]}, ${rgb[1]}, ${rgb[2]})`],
-      ['HSL', `hsl(${hsl[0]}, ${hsl[1]}%, ${hsl[2]}%)`]
-    ];
-    vals.innerHTML = rows.map(r => `
-      <div class="val-row">
-        <span class="k">${r[0]}</span><span class="v mono">${r[1]}</span>
-        <button class="btn small cp" type="button" data-v="${r[1]}" aria-label="${r[0]} 값 복사">복사</button>
-      </div>`).join('');
-  }
-  function fromText(){
-    const rgb = parseColor(txt.value);
-    if(!rgb){ setStatus(st, '인식할 수 없는 색상 코드예요. 예: #ff8a3d, rgb(255, 138, 61), hsl(24, 100%, 62%)', 'err'); return; }
-    setStatus(st, ''); show(rgb);
-  }
-  txt.addEventListener('input', fromText);
-  pick.addEventListener('input', () => { txt.value = pick.value; setStatus(st,''); show(hexToRgb(pick.value)); });
-  vals.addEventListener('click', e => {
-    const b = e.target.closest('.cp'); if(b) copyWithToast(b.dataset.v);
-  });
-  fromText();
-}
+    <script>
+        (function () {
+            'use strict';
 
-/* random string */
-function randInt(max){
-  const lim = Math.floor(0x100000000 / max) * max, a = new Uint32Array(1);
-  let x;
-  do{ crypto.getRandomValues(a); x = a[0]; }while(x >= lim);
-  return x % max;
-}
-function renderRandom(root){
-  const SETS = {
-    upper:'ABCDEFGHIJKLMNOPQRSTUVWXYZ', lower:'abcdefghijklmnopqrstuvwxyz',
-    digit:'0123456789', symbol:'!@#$%^&*()-_=+[]{};:,.?'
-  };
-  root.innerHTML = `
-    <label class="lbl" for="len">길이: <span id="lv">16</span>자</label>
-    <input id="len" type="range" min="8" max="64" value="16">
-    <div class="checks">
-      <label class="check"><input type="checkbox" data-set="upper" checked> 대문자</label>
-      <label class="check"><input type="checkbox" data-set="lower" checked> 소문자</label>
-      <label class="check"><input type="checkbox" data-set="digit" checked> 숫자</label>
-      <label class="check"><input type="checkbox" data-set="symbol" checked> 기호</label>
-    </div>
-    <div class="result-line">
-      <div class="val mono" id="res" aria-live="polite"></div>
-      <button class="btn small" id="cp" type="button">복사</button>
-    </div>
-    <div class="status" id="st"></div>
-    <div class="actions"><button class="btn primary" id="gen" type="button">새로 만들기</button></div>
-    <p class="hint">브라우저의 보안 난수(crypto)로 만들어요.</p>`;
-  const len = $('#len', root), lv = $('#lv', root), res = $('#res', root), st = $('#st', root);
-  function gen(){
-    lv.textContent = len.value;
-    const active = $$('input[data-set]:checked', root).map(c => SETS[c.dataset.set]);
-    if(!active.length){ res.textContent = ''; setStatus(st, '문자 종류를 하나 이상 선택해 주세요.', 'err'); return; }
-    setStatus(st, '');
-    const n = Number(len.value), all = active.join(''), chars = [];
-    active.forEach(set => chars.push(set[randInt(set.length)]));
-    while(chars.length < n) chars.push(all[randInt(all.length)]);
-    for(let i = chars.length - 1; i > 0; i--){
-      const j = randInt(i + 1); [chars[i], chars[j]] = [chars[j], chars[i]];
-    }
-    res.textContent = chars.join('');
-  }
-  len.addEventListener('input', gen);
-  $$('input[data-set]', root).forEach(c => c.addEventListener('change', gen));
-  $('#gen', root).addEventListener('click', gen);
-  $('#cp', root).addEventListener('click', () => { if(res.textContent) copyWithToast(res.textContent); });
-  gen();
-}
+            const $ = (s, r = document) => r.querySelector(s);
+            const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+            const esc = s => String(s).replace(/[&<>"]/g, c => ({
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;'
+            }[c]));
+            const fmt = n => Number.isFinite(n)
+                ? (+n.toPrecision(12)).toLocaleString('ko-KR', { maximumFractionDigits: 10 })
+                : '-';
+            const ls = (k, v) => {
+                try {
+                    return v === undefined
+                        ? localStorage.getItem(k)
+                        : localStorage.setItem(k, v);
+                } catch (e) {
+                    return null;
+                }
+            };
 
-/* date diff */
-function renderDate(root){
-  const d = new Date();
-  const iso = d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
-  root.innerHTML = `
-    <div class="two">
-      <div><label class="lbl" for="d1">시작일</label><input id="d1" type="date" value="${iso}"></div>
-      <div><label class="lbl" for="d2">종료일</label><input id="d2" type="date" value="${iso}"></div>
-    </div>
-    <div class="status" id="st" aria-live="polite"></div>
-    <div class="stats" id="s"></div>`;
-  const d1 = $('#d1', root), d2 = $('#d2', root), st = $('#st', root), s = $('#s', root);
-  const parse = v => { const p = v.split('-').map(Number); return { y:p[0], m:p[1], d:p[2] }; };
-  const utc = o => Date.UTC(o.y, o.m - 1, o.d);
-  function calc(){
-    if(!d1.value || !d2.value){ s.innerHTML = ''; setStatus(st, '두 날짜를 모두 선택해 주세요.', 'err'); return; }
-    let a = parse(d1.value), b = parse(d2.value), swapped = false;
-    if(utc(a) > utc(b)){ const t = a; a = b; b = t; swapped = true; }
-    setStatus(st, swapped ? '시작일이 종료일보다 늦어서 순서를 바꿔 계산했어요.' : '');
-    const days = Math.round((utc(b) - utc(a)) / 86400000);
-    let y = b.y - a.y, m = b.m - a.m, dd = b.d - a.d;
-    if(dd < 0){ m--; dd += new Date(Date.UTC(b.y, b.m - 1, 0)).getUTCDate(); }
-    if(m < 0){ y--; m += 12; }
-    const rows = [
-      ['총 일수', fmt(days) + '일'],
-      ['주 단위', Math.floor(days/7) + '주 ' + (days % 7) + '일'],
-      ['년·개월·일', y + '년 ' + m + '개월 ' + dd + '일']
-    ];
-    s.innerHTML = rows.map(r => `<div class="stat"><div class="k">${r[0]}</div><div class="v">${r[1]}</div></div>`).join('');
-  }
-  d1.addEventListener('input', calc); d2.addEventListener('input', calc); calc();
-}
+            let tt;
 
-const TOOLS = [
-  { id:'char-count', name:'글자 수 세기', cat:'텍스트', icon:ICONS.count, keys:'character count length words bytes 글자 단어 바이트 줄',
-    desc:'글자, 단어, 줄, 바이트 수를 바로 세어 줘요.', render:renderCount },
-  { id:'json-format', name:'JSON 정리', cat:'개발', icon:ICONS.json, keys:'json format pretty minify beautify 정리 압축',
-    desc:'JSON을 보기 좋게 정리하거나 한 줄로 압축해요.', render:renderJson },
-  { id:'color-convert', name:'색상 코드 변환', cat:'디자인', icon:ICONS.color, keys:'color hex rgb hsl converter 색상 컬러',
-    desc:'HEX, RGB, HSL 색상 코드를 서로 바꿔 줘요.', render:renderColor },
-  { id:'random-string', name:'임의 문자열 생성', cat:'개발', icon:ICONS.random, keys:'password random string generator 비밀번호 랜덤',
-    desc:'비밀번호로 쓸 수 있는 무작위 문자열을 만들어요.', render:renderRandom },
-  { id:'date-diff', name:'날짜 차이 계산', cat:'유틸리티', icon:ICONS.date, keys:'date difference days dday 날짜 일수 디데이',
-    desc:'두 날짜 사이가 며칠인지, 몇 개월인지 계산해요.', render:renderDate }
-];
+            const toast = m => {
+                const t = $('#toast');
+                t.textContent = m;
+                t.classList.add('show');
+                clearTimeout(tt);
+                tt = setTimeout(() => t.classList.remove('show'), 1400);
+            };
 
-/* ---------- app state ---------- */
-const CATS = ['전체','즐겨찾기'].concat(Array.from(new Set(TOOLS.map(t => t.cat))));
-let favs = new Set();
-try{ favs = new Set(JSON.parse(lsGet('toolbox:favs') || '[]')); }catch(e){}
-const state = { q:'', cat:'전체', current:null };
+            async function copy(x) {
+                if (!x) {
+                    toast('복사할 내용이 없어요');
+                    return;
+                }
 
-function saveFavs(){ lsSet('toolbox:favs', JSON.stringify(Array.from(favs))); }
+                let ok = false;
 
-const STAR = on => `<svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M12 3.5l2.6 5.3 5.9.9-4.3 4.1 1 5.8L12 16.9 6.8 19.6l1-5.8-4.3-4.1 5.9-.9z" fill="${on ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>`;
+                try {
+                    await navigator.clipboard.writeText(x);
+                    ok = true;
+                } catch (e) {
+                    try {
+                        const a = document.createElement('textarea');
+                        a.value = x;
+                        a.style.cssText = 'position:fixed;opacity:0';
+                        document.body.appendChild(a);
+                        a.select();
+                        ok = document.execCommand('copy');
+                        a.remove();
+                    } catch (e2) {}
+                }
 
-function renderChips(){
-  $('#chips').innerHTML = CATS.map(c =>
-    `<button class="chip" type="button" data-cat="${c}" aria-pressed="${state.cat === c}">${c}</button>`).join('');
-}
+                toast(ok ? '복사했어요' : '복사하지 못했어요. 직접 선택해 복사해 주세요.');
+            }
 
-function renderGrid(){
-  const q = state.q.trim().toLowerCase();
-  const list = TOOLS.filter(t => {
-    if(state.cat === '즐겨찾기' && !favs.has(t.id)) return false;
-    if(state.cat !== '전체' && state.cat !== '즐겨찾기' && t.cat !== state.cat) return false;
-    if(q && !(t.name + ' ' + t.desc + ' ' + t.cat + ' ' + t.keys).toLowerCase().includes(q)) return false;
-    return true;
-  });
-  $('#count').textContent = (q || state.cat !== '전체') ? `${list.length}개의 도구` : `도구 ${TOOLS.length}개 사용 가능`;
-  const grid = $('#grid');
-  if(!list.length){
-    grid.innerHTML = `<p class="empty" style="grid-column:1/-1">${
-      state.cat === '즐겨찾기' && !q ? '즐겨찾기한 도구가 없어요. 카드 오른쪽 위의 별을 눌러 추가해 보세요.' : '찾는 도구가 없어요. 다른 단어로 검색해 보세요.'
-    }</p>`;
-    return;
-  }
-  grid.innerHTML = list.map(t => {
-    const on = favs.has(t.id);
-    return `<article class="card">
-      <button class="open" type="button" data-id="${t.id}">
-        <div class="icon">${t.icon}</div>
-        <div class="name-row"><span class="name">${t.name}</span><span class="tag">${t.cat}</span></div>
-        <p class="desc">${t.desc}</p>
-        <span class="go">도구 열기 ${ARROW}</span>
-      </button>
-      <button class="star" type="button" data-fav="${t.id}" aria-pressed="${on}" aria-label="${t.name} ${on ? '즐겨찾기에서 빼기' : '즐겨찾기에 추가'}">${STAR(on)}</button>
-    </article>`;
-  }).join('');
-}
+            const st = (el, m, k) => {
+                el.textContent = m || '';
+                el.className = 'status' + (k ? ' ' + k : '');
+            };
 
-function show(){
-  const t = TOOLS.find(x => x.id === state.current);
-  if(!t){
-    state.current = null;
-    $('#tool').hidden = true; $('#home').hidden = false;
-    document.title = '미니 도구 상자';
-    renderGrid();
-    return;
-  }
-  $('#home').hidden = true; $('#tool').hidden = false;
-  $('#tool-title').textContent = t.name;
-  $('#tool-desc').textContent = t.desc;
-  const body = $('#tool-body'); body.innerHTML = '';
-  t.render(body);
-  document.title = t.name + ' · 미니 도구 상자';
-  window.scrollTo(0, 0);
-}
+            const bindCopy = root => root.addEventListener('click', e => {
+                const b = e.target.closest('[data-c],[data-copy]');
+                if (b) {
+                    copy(b.hasAttribute('data-c') ? b.dataset.c : ($('#o', root) || {}).value);
+                }
+            });
 
-function go(id){
-  state.current = id;
-  try{ location.hash = id ? '/' + id : ''; }catch(e){}
-  show();
-}
-function idFromHash(){
-  const m = (location.hash || '').match(/^#\/([\w-]+)$/);
-  return m ? m[1] : null;
-}
-function goHome(){
-  state.q = ''; state.cat = '전체'; $('#q').value = '';
-  renderChips(); go(null);
-}
+            const view = r =>
+                (r.out != null
+                    ? `<div class="lbl rl">결과</div><textarea id="o" class="out" readonly rows="${r.n || 5}" spellcheck="false"></textarea><div class="actions"><button class="btn" data-copy type="button">결과 복사</button></div>`
+                    : '')
+                + (r.list
+                    ? r.list.map(([k, v]) => `<div class="val-row"><span class="k">${esc(k)}</span><span class="v mono">${esc(v)}</span><button class="btn small" data-c="${esc(v)}" type="button" aria-label="${esc(k)} 복사">복사</button></div>`).join('')
+                    : '')
+                + (r.stats
+                    ? '<div class="stats">' + r.stats.map(([k, v]) => `<div class="stat"><div class="k">${esc(k)}</div><div class="v">${esc(v)}</div></div>`).join('') + '</div>'
+                    : '');
 
-/* ---------- events ---------- */
-$('#q').addEventListener('input', e => {
-  state.q = e.target.value;
-  if(state.current) go(null); else renderGrid();
-});
-document.addEventListener('keydown', e => {
-  if((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k'){ e.preventDefault(); $('#q').focus(); }
-});
-$('#brand').addEventListener('click', goHome);
-$('#navTools').addEventListener('click', goHome);
-$('#chips').addEventListener('click', e => {
-  const b = e.target.closest('.chip'); if(!b) return;
-  state.cat = b.dataset.cat; renderChips(); renderGrid();
-});
-$('#grid').addEventListener('click', e => {
-  const star = e.target.closest('.star');
-  if(star){
-    const id = star.dataset.fav;
-    favs.has(id) ? favs.delete(id) : favs.add(id);
-    saveFavs(); renderGrid(); return;
-  }
-  const open = e.target.closest('.open');
-  if(open) go(open.dataset.id);
-});
-$('#back').addEventListener('click', () => go(null));
-window.addEventListener('hashchange', () => {
-  const id = idFromHash();
-  if(id === state.current) return;
-  state.current = id; show();
-});
+            /* ---- 공통 폼 엔진: fields(입력) + run(값) → {out,list,stats,err,ok,note} ---- */
+            function form(root, T) {
+                const F = T.fields || [];
 
-/* theme */
-function applyTheme(v){ document.documentElement.setAttribute('data-theme', v); }
-const savedTheme = lsGet('toolbox:theme');
-if(savedTheme === 'light' || savedTheme === 'dark') applyTheme(savedTheme);
-$('#theme').addEventListener('click', () => {
-  const root = document.documentElement;
-  const cur = root.getAttribute('data-theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
-  const next = cur === 'dark' ? 'light' : 'dark';
-  applyTheme(next); lsSet('toolbox:theme', next);
-});
+                root.innerHTML = '<div class="fs">' + F.map(f => {
+                    const id = 'f_' + f.id;
+                    const t = f.t || 'number';
+                    let h;
 
-/* start */
-renderChips();
-state.current = idFromHash();
-show();
-})();
-</script>
+                    if (t === 'chk') {
+                        return `<div class="fld${f.h ? ' h' : ''}" data-f="${f.id}"><label class="check"><input type="checkbox" id="${id}"${f.v ? ' checked' : ''}> ${f.label}</label></div>`;
+                    }
+
+                    if (t === 'area') {
+                        h = `<textarea id="${id}" rows="${f.rows || 6}" spellcheck="false" placeholder="${esc(f.ph || '')}"></textarea>`;
+                    } else if (t === 'sel') {
+                        h = `<select id="${id}">` + (f.og
+                            ? Object.entries(f.og).map(([g, a]) => `<optgroup label="${g}">` + a.map(u => `<option value="${g}|${u}"${u === f.v ? ' selected' : ''}>${u}</option>`).join('') + '</optgroup>').join('')
+                            : f.o.map((o, i) => `<option value="${i}">${o}</option>`).join('')) + '</select>';
+                    } else {
+                        h = `<input id="${id}" type="${t}"${t === 'number' ? ' step="any"' : ''}${t === 'range' ? ` min="${f.min}" max="${f.max}"` : ''} value="${f.v ?? ''}">`;
+                    }
+
+                    return `<div class="fld${f.h ? ' h' : ''}" data-f="${f.id}"><label class="lbl" for="${id}">${f.label}${t === 'range' ? ' <b class="rv"></b>' : ''}</label>${h}</div>`;
+                }).join('')
+                    + '</div><div class="actions">'
+                    + (T.btn ? `<button class="btn primary" id="rg" type="button">${T.btn}</button>` : '')
+                    + (F.some(f => f.t === 'area') ? '<button class="btn" id="clr" type="button">모두 지우기</button>' : '')
+                    + '</div><div class="status" id="st" aria-live="polite"></div><div id="res"></div>';
+
+                const res = $('#res', root);
+                const s = $('#st', root);
+
+                const val = () => {
+                    const v = {};
+
+                    F.forEach(f => {
+                        const e = $('#f_' + f.id, root);
+                        const t = f.t || 'number';
+
+                        v[f.id] = t === 'chk'
+                            ? e.checked
+                            : t === 'sel'
+                                ? (f.og ? e.value : e.selectedIndex)
+                                : (t === 'number' || t === 'range')
+                                    ? (e.value === '' ? NaN : +e.value)
+                                    : e.value;
+                    });
+
+                    return v;
+                };
+
+                const go = () => {
+                    const v = val();
+
+                    F.forEach(f => {
+                        const w = $('[data-f="' + f.id + '"]', root);
+                        if (f.when) w.hidden = !f.when(v);
+                        if (f.t === 'range') $('.rv', w).textContent = v[f.id];
+                    });
+
+                    let r;
+
+                    try {
+                        r = T.run(v) || {};
+                    } catch (e) {
+                        r = { err: e.message };
+                    }
+
+                    st(s, r.err || r.ok || r.note, r.err ? 'err' : r.ok ? 'ok' : '');
+                    res.innerHTML = view(r);
+
+                    const o = $('#o', res);
+                    if (o) o.value = r.out;
+                };
+
+                root.addEventListener('input', go);
+
+                const rg = $('#rg', root);
+                if (rg) rg.addEventListener('click', go);
+
+                const cl = $('#clr', root);
+                if (cl) {
+                    cl.addEventListener('click', () => {
+                        $$('textarea', root).forEach(a => a.value = '');
+                        go();
+                    });
+                }
+
+                bindCopy(root);
+                go();
+            }
+
+            /* ---- 날짜 도우미 ---- */
+            const iso = d => d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+            const TD = iso(new Date());
+            const DAY = 864e5;
+            const WK = ['일', '월', '화', '수', '목', '금', '토'];
+            const P = s => {
+                const p = s.split('-').map(Number);
+                return Date.UTC(p[0], p[1] - 1, p[2]);
+            };
+            const fd = ms => new Date(ms).toISOString().slice(0, 10);
+            const dow = ms => WK[new Date(ms).getUTCDay()] + '요일';
+
+            function ymd(a, b) {
+                const x = new Date(a);
+                const y = new Date(b);
+                let Y = y.getUTCFullYear() - x.getUTCFullYear();
+                let M = y.getUTCMonth() - x.getUTCMonth();
+                let D = y.getUTCDate() - x.getUTCDate();
+
+                if (D < 0) {
+                    M--;
+                    D += new Date(Date.UTC(y.getUTCFullYear(), y.getUTCMonth(), 0)).getUTCDate();
+                }
+
+                if (M < 0) {
+                    Y--;
+                    M += 12;
+                }
+
+                return [Y, M, D];
+            }
+
+            /* ---- 난수 / 색상 도우미 ---- */
+            function randInt(max) {
+                const lim = Math.floor(4294967296 / max) * max;
+                const a = new Uint32Array(1);
+                let x;
+
+                do {
+                    crypto.getRandomValues(a);
+                    x = a[0];
+                } while (x >= lim);
+
+                return x % max;
+            }
+
+            const uid = () => crypto.randomUUID
+                ? crypto.randomUUID()
+                : '10000000-1000-4000-8000-100000000000'.replace(/[018]/g, c => (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16));
+
+            const hex2rgb = h => {
+                h = h.replace('#', '');
+                if (h.length === 3) h = [...h].map(c => c + c).join('');
+                const n = parseInt(h, 16);
+                return [n >> 16 & 255, n >> 8 & 255, n & 255];
+            };
+
+            const rgb2hex = c => '#' + c.map(v => v.toString(16).padStart(2, '0')).join('');
+
+            function rgb2hsl(c) {
+                const [r, g, b] = c.map(x => x / 255);
+                const M = Math.max(r, g, b);
+                const m = Math.min(r, g, b);
+                const d = M - m;
+                const l = (M + m) / 2;
+                let h = 0;
+                let s = 0;
+
+                if (d) {
+                    s = l > .5 ? d / (2 - M - m) : d / (M + m);
+                    h = M === r
+                        ? (g - b) / d + (g < b ? 6 : 0)
+                        : M === g
+                            ? (b - r) / d + 2
+                            : (r - g) / d + 4;
+                    h *= 60;
+                }
+
+                return [Math.round(h) % 360, Math.round(s * 100), Math.round(l * 100)];
+            }
+
+            function hsl2rgb(h, s, l) {
+                h = (h % 360 + 360) % 360;
+                s /= 100;
+                l /= 100;
+
+                const k = n => (n + h / 30) % 12;
+                const a = s * Math.min(l, 1 - l);
+                const f = n => l - a * Math.max(-1, Math.min(k(n) - 3, 9 - k(n), 1));
+
+                return [f(0), f(8), f(4)].map(x => Math.round(x * 255));
+            }
+
+            function parseColor(str) {
+                const s = str.trim().toLowerCase();
+                let m = s.match(/^#?([0-9a-f]{3}|[0-9a-f]{6})$/);
+                if (m) return hex2rgb(m[1]);
+
+                m = s.match(/^(?:rgb\()?\s*(\d{1,3})\s*[, ]\s*(\d{1,3})\s*[, ]\s*(\d{1,3})\s*\)?$/);
+                if (m) {
+                    const v = [m[1], m[2], m[3]].map(Number);
+                    return v.every(n => n <= 255) ? v : null;
+                }
+
+                m = s.match(/^hsl\(\s*(\d{1,3})\s*[, ]\s*(\d{1,3})%?\s*[, ]\s*(\d{1,3})%?\s*\)$/);
+                if (m && +m[1] <= 360 && +m[2] <= 100 && +m[3] <= 100) {
+                    return hsl2rgb(+m[1], +m[2], +m[3]);
+                }
+
+                return null;
+            }
+
+            function colorTool(root) {
+                root.innerHTML = '<label class="lbl" for="c">색상 코드</label><div class="color-in"><input id="pick" type="color" value="#ff8a3d" aria-label="색상 고르기"><input id="c" type="text" value="#ff8a3d" spellcheck="false" autocapitalize="off" autocomplete="off" placeholder="#ff8a3d, rgb(255, 138, 61), hsl(24, 100%, 62%)"></div><div class="status" id="st" aria-live="polite"></div><div class="swatch" id="sw"></div><div id="res"></div>';
+
+                const pk = $('#pick', root);
+                const tx = $('#c', root);
+                const s = $('#st', root);
+                const sw = $('#sw', root);
+                const res = $('#res', root);
+
+                const show = c => {
+                    const h = rgb2hex(c);
+                    const l = rgb2hsl(c);
+                    sw.style.background = h;
+                    pk.value = h;
+                    res.innerHTML = view({
+                        list: [
+                            ['HEX', h],
+                            ['RGB', `rgb(${c.join(', ')})`],
+                            ['HSL', `hsl(${l[0]}, ${l[1]}%, ${l[2]}%)`]
+                        ]
+                    });
+                };
+
+                const fromText = () => {
+                    const c = parseColor(tx.value);
+
+                    if (!c) {
+                        st(s, '인식할 수 없는 색상 코드예요. 예: #ff8a3d, rgb(255, 138, 61), hsl(24, 100%, 62%)', 'err');
+                        return;
+                    }
+
+                    st(s, '');
+                    show(c);
+                };
+
+                tx.addEventListener('input', fromText);
+                pk.addEventListener('input', () => {
+                    tx.value = pk.value;
+                    st(s, '');
+                    show(hex2rgb(pk.value));
+                });
+
+                bindCopy(root);
+                fromText();
+            }
+
+            /* ---- 아이콘 ---- */
+            const ic = p => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${p}</svg>`;
+            const ARROW = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>';
+            const SETS = {
+                u: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ',
+                l: 'abcdefghijklmnopqrstuvwxyz',
+                d: '0123456789',
+                s: '!@#$%^&*()-_=+[]{};:,.?'
+            };
+            const UN = {
+                길이: { mm: .001, cm: .01, m: 1, km: 1e3, inch: .0254, ft: .3048, yd: .9144, mile: 1609.344 },
+                무게: { mg: .001, g: 1, kg: 1e3, t: 1e6, oz: 28.349523125, lb: 453.59237, 근: 600 },
+                면적: { '㎡': 1, '㎢': 1e6, ha: 1e4, '평': 400 / 121, acre: 4046.8564224, 'ft²': .09290304 },
+                데이터: { B: 1, KB: 1024, MB: 1048576, GB: 1073741824, TB: 1099511627776 },
+                온도: { '°C': 1, '°F': 1, K: 1 }
+            };
+
+            /* ---- 도구 목록 (새 도구는 여기에 객체 하나만 추가) ---- */
+            const TOOLS = [
+                {
+                    id: 'char-count',
+                    name: '글자 수 세기',
+                    cat: '텍스트',
+                    icon: ic('<path d="M4 7V5h16v2M12 5v14M9 19h6"/>'),
+                    keys: 'character count length words bytes 글자 단어 바이트',
+                    desc: '글자, 단어, 줄, 바이트 수를 바로 세어 줘요.',
+                    fields: [
+                        { id: 's', t: 'area', label: '텍스트', rows: 8, ph: '여기에 글을 붙여넣거나 입력하세요' }
+                    ],
+                    run(v) {
+                        const s = v.s;
+                        const w = s.trim();
+
+                        return {
+                            stats: [
+                                ['글자 수 (공백 포함)', fmt([...s].length)],
+                                ['글자 수 (공백 제외)', fmt([...s.replace(/\s/g, '')].length)],
+                                ['단어 수', fmt(w ? w.split(/\s+/).length : 0)],
+                                ['줄 수', fmt(s ? s.split(/\r\n|\r|\n/).length : 0)],
+                                ['바이트 (UTF-8)', fmt(new TextEncoder().encode(s).length)]
+                            ]
+                        };
+                    }
+                },
+                {
+                    id: 'dedupe-lines',
+                    name: '중복 줄 제거',
+                    cat: '텍스트',
+                    icon: ic('<rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/>'),
+                    keys: 'duplicate unique lines sort 중복 줄 정렬',
+                    desc: '겹치는 줄을 지우고 한 번씩만 남겨요.',
+                    fields: [
+                        { id: 's', t: 'area', label: '텍스트 (한 줄에 하나씩)', rows: 8 },
+                        { id: 'i', t: 'chk', h: 1, label: '대소문자 구분 안 함' },
+                        { id: 't', t: 'chk', h: 1, label: '앞뒤 공백 제거', v: 1 },
+                        { id: 'e', t: 'chk', h: 1, label: '빈 줄 제거', v: 1 },
+                        { id: 'o', t: 'chk', h: 1, label: '가나다순 정렬' }
+                    ],
+                    run(v) {
+                        if (!v.s) return {};
+
+                        let L = v.s.split(/\r?\n/);
+                        const n = L.length;
+
+                        if (v.t) L = L.map(x => x.trim());
+                        if (v.e) L = L.filter(x => x !== '');
+
+                        const seen = new Set();
+                        L = L.filter(x => {
+                            const k = v.i ? x.toLowerCase() : x;
+                            if (seen.has(k)) return false;
+                            seen.add(k);
+                            return true;
+                        });
+
+                        if (v.o) L.sort((a, b) => a.localeCompare(b, 'ko'));
+
+                        return {
+                            out: L.join('\n'),
+                            n: 6,
+                            stats: [
+                                ['원래 줄 수', fmt(n)],
+                                ['남은 줄 수', fmt(L.length)],
+                                ['제거된 줄', fmt(n - L.length)]
+                            ]
+                        };
+                    }
+                },
+                {
+                    id: 'case-convert',
+                    name: '대소문자 변환',
+                    cat: '텍스트',
+                    icon: ic('<path d="M3 18l5-12 5 12M5 14h6"/><path d="M15 18l3.5-8 3.5 8M16.3 15h4.4"/>'),
+                    keys: 'uppercase lowercase camel snake kebab title case 대문자 소문자',
+                    desc: '대문자, 소문자, camelCase, snake_case 등으로 바꿔요.',
+                    fields: [
+                        { id: 's', t: 'area', label: '텍스트', rows: 5 },
+                        { id: 'm', t: 'sel', label: '변환 방식', o: ['모두 대문자', '모두 소문자', '단어 첫 글자만 대문자', '문장 첫 글자만 대문자', 'camelCase', 'snake_case', 'kebab-case'] }
+                    ],
+                    run(v) {
+                        const s = v.s;
+                        if (!s) return {};
+
+                        const w = () => s.replace(/([a-z0-9])([A-Z])/g, '$1 $2').split(/[^A-Za-z0-9가-힣]+/).filter(Boolean).map(x => x.toLowerCase());
+                        const cap = x => x[0].toUpperCase() + x.slice(1);
+
+                        return {
+                            n: 6,
+                            out: [
+                                s.toUpperCase(),
+                                s.toLowerCase(),
+                                s.toLowerCase().replace(/(^|[\s_-])([a-z])/g, (m, a, b) => a + b.toUpperCase()),
+                                s.toLowerCase().replace(/(^\s*|[.!?]\s+)([a-z])/g, (m, a, b) => a + b.toUpperCase()),
+                                w().map((x, i) => i ? cap(x) : x).join(''),
+                                w().join('_'),
+                                w().join('-')
+                            ][v.m]
+                        };
+                    }
+                },
+                {
+                    id: 'json-format',
+                    name: 'JSON 정리',
+                    cat: '개발',
+                    icon: ic('<path d="M8 4C6 4 5 5 5 7v2.5c0 1.2-.8 2.1-2 2.5 1.2.4 2 1.3 2 2.5V17c0 2 1 3 3 3"/><path d="M16 4c2 0 3 1 3 3v2.5c0 1.2.8 2.1 2 2.5-1.2.4-2 1.3-2 2.5V17c0 2-1 3-3 3"/>'),
+                    keys: 'json format pretty minify beautify 정리 압축',
+                    desc: 'JSON을 보기 좋게 정리하거나 한 줄로 압축해요.',
+                    fields: [
+                        { id: 's', t: 'area', label: 'JSON 입력', rows: 8, ph: '{"name":"홍길동","tags":["a","b"]}' },
+                        { id: 'm', t: 'sel', label: '방식', o: ['보기 좋게 정리 (공백 2칸)', '보기 좋게 정리 (공백 4칸)', '보기 좋게 정리 (탭)', '한 줄로 압축'] }
+                    ],
+                    run(v) {
+                        const s = v.s.trim();
+                        if (!s) return {};
+
+                        try {
+                            const o = JSON.parse(s);
+                            return {
+                                ok: '올바른 JSON이에요.',
+                                n: 10,
+                                out: v.m === 3 ? JSON.stringify(o) : JSON.stringify(o, null, [2, 4, '\t'][v.m])
+                            };
+                        } catch (e) {
+                            return { err: 'JSON 형식이 올바르지 않아요: ' + e.message };
+                        }
+                    }
+                },
+                {
+                    id: 'url-encode',
+                    name: 'URL 인코딩',
+                    cat: '개발',
+                    icon: ic('<path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/>'),
+                    keys: 'url encode decode percent uri 인코딩 디코딩 주소',
+                    desc: '주소와 한글을 안전하게 인코딩하거나 디코딩해요.',
+                    fields: [
+                        { id: 's', t: 'area', label: '입력', rows: 5 },
+                        { id: 'm', t: 'sel', label: '방식', o: ['인코딩 (encodeURIComponent)', '디코딩', '주소 전체 인코딩 (encodeURI)'] }
+                    ],
+                    run(v) {
+                        if (!v.s) return {};
+                        try {
+                            return { n: 5, out: [encodeURIComponent, decodeURIComponent, encodeURI][v.m](v.s) };
+                        } catch (e) {
+                            return { err: '변환할 수 없는 형식이에요.' };
+                        }
+                    }
+                },
+                {
+                    id: 'base64',
+                    name: 'Base64 변환',
+                    cat: '개발',
+                    icon: ic('<path d="M4 8h14M14 4l4 4-4 4"/><path d="M20 16H6M10 12l-4 4 4 4"/>'),
+                    keys: 'base64 encode decode 인코딩 디코딩',
+                    desc: '텍스트를 Base64로 바꾸거나 되돌려요. 한글도 돼요.',
+                    fields: [
+                        { id: 's', t: 'area', label: '입력', rows: 5 },
+                        { id: 'm', t: 'sel', label: '방식', o: ['인코딩', '디코딩'] }
+                    ],
+                    run(v) {
+                        if (!v.s) return {};
+
+                        try {
+                            if (v.m === 0) {
+                                let b = '';
+                                new TextEncoder().encode(v.s).forEach(c => b += String.fromCharCode(c));
+                                return { n: 5, out: btoa(b) };
+                            }
+
+                            const b = atob(v.s.trim().replace(/-/g, '+').replace(/_/g, '/'));
+                            return {
+                                n: 5,
+                                out: new TextDecoder('utf-8', { fatal: true }).decode(Uint8Array.from(b, c => c.charCodeAt(0)))
+                            };
+                        } catch (e) {
+                            return { err: '변환할 수 없는 문자열이에요.' };
+                        }
+                    }
+                },
+                {
+                    id: 'percent',
+                    name: '퍼센트 계산',
+                    cat: '계산',
+                    icon: ic('<path d="M19 5L5 19"/><circle cx="7" cy="7" r="2.5"/><circle cx="17" cy="17" r="2.5"/>'),
+                    keys: 'percent percentage rate 퍼센트 비율 증가율 할인',
+                    desc: '비율, 증감률, 할인가 같은 퍼센트를 계산해요.',
+                    fields: [
+                        { id: 'm', t: 'sel', label: '계산 종류', o: ['A의 B%는 얼마?', 'A는 B의 몇 %?', 'A에서 B로 바뀐 비율', 'A에 B%를 더하면', 'A에서 B%를 빼면 (할인)'] },
+                        { id: 'a', h: 1, label: 'A', v: 200 },
+                        { id: 'b', h: 1, label: 'B', v: 15 }
+                    ],
+                    run({ m, a, b }) {
+                        if (isNaN(a) || isNaN(b)) return {};
+
+                        const f = (k, x, u = '') => ({ stats: [[k, fmt(x) + u]] });
+
+                        if (m === 0) return f(`${fmt(a)}의 ${fmt(b)}%`, a * b / 100);
+                        if (m === 1) return b ? f(`${fmt(a)}은(는) ${fmt(b)}의`, a / b * 100, '%') : { err: 'B가 0이면 계산할 수 없어요.' };
+
+                        if (m === 2) {
+                            if (!a) return { err: 'A가 0이면 계산할 수 없어요.' };
+                            const r = (b - a) / Math.abs(a) * 100;
+                            return f(r > 0 ? '증가율' : r < 0 ? '감소율' : '변화 없음', Math.abs(r), '%');
+                        }
+
+                        return f(
+                            m === 3 ? `${fmt(a)}에 ${fmt(b)}%를 더하면` : `${fmt(a)}에서 ${fmt(b)}%를 빼면`,
+                            a * (1 + (m === 3 ? b : -b) / 100)
+                        );
+                    }
+                },
+                {
+                    id: 'unit-convert',
+                    name: '단위 변환',
+                    cat: '계산',
+                    icon: ic('<rect x="2.5" y="8" width="19" height="8" rx="1.5"/><path d="M6 8v3M10 8v4M14 8v3M18 8v4"/>'),
+                    keys: 'unit convert length weight area temperature data 길이 무게 면적 평 온도 용량',
+                    desc: '길이, 무게, 면적(평), 온도, 데이터 단위를 한 번에 바꿔요.',
+                    fields: [
+                        { id: 'x', h: 1, label: '값', v: 1 },
+                        { id: 'u', t: 'sel', h: 1, label: '단위', v: 'm', og: Object.fromEntries(Object.entries(UN).map(([g, o]) => [g, Object.keys(o)])) }
+                    ],
+                    run(v) {
+                        if (isNaN(v.x)) return {};
+
+                        const [g, u] = v.u.split('|');
+
+                        if (g === '온도') {
+                            const c = u === '°C' ? v.x : u === '°F' ? (v.x - 32) * 5 / 9 : v.x - 273.15;
+                            const o = { '°C': c, '°F': c * 9 / 5 + 32, K: c + 273.15 };
+                            return { stats: Object.entries(o).filter(([k]) => k !== u).map(([k, x]) => [k, fmt(x)]) };
+                        }
+
+                        const b = v.x * UN[g][u];
+                        return { stats: Object.entries(UN[g]).filter(([k]) => k !== u).map(([k, f]) => [k, fmt(b / f)]) };
+                    }
+                },
+                {
+                    id: 'date-calc',
+                    name: '날짜 계산',
+                    cat: '계산',
+                    icon: ic('<rect x="3.5" y="5" width="17" height="15" rx="2.5"/><path d="M8 3v4M16 3v4M3.5 10h17"/>'),
+                    keys: 'date difference add days weekday 날짜 차이 일수 요일',
+                    desc: '두 날짜 사이의 간격이나 N일 뒤 날짜를 구해요.',
+                    fields: [
+                        { id: 'm', t: 'sel', label: '계산 종류', o: ['두 날짜 사이 간격', '날짜에 일수 더하기 / 빼기'] },
+                        { id: 'a', t: 'date', h: 1, label: '날짜 1 / 기준일', v: TD },
+                        { id: 'b', t: 'date', h: 1, label: '날짜 2', v: TD, when: v => v.m === 0 },
+                        { id: 'n', h: 1, label: '일수 (빼려면 -)', v: 30, when: v => v.m === 1 }
+                    ],
+                    run(v) {
+                        if (!v.a) return {};
+
+                        if (v.m === 1) {
+                            if (isNaN(v.n)) return {};
+                            const t = P(v.a) + Math.round(v.n) * DAY;
+                            return { stats: [['결과 날짜', fd(t)], ['요일', dow(t)]] };
+                        }
+
+                        if (!v.b) return {};
+
+                        let a = P(v.a);
+                        let b = P(v.b);
+                        const sw = a > b;
+                        if (sw) [a, b] = [b, a];
+
+                        const d = (b - a) / DAY;
+                        const [Y, M, D] = ymd(a, b);
+
+                        return {
+                            note: sw ? '날짜 1이 더 늦어서 순서를 바꿔 계산했어요.' : '',
+                            stats: [
+                                ['총 일수', fmt(d) + '일'],
+                                ['주 단위', Math.floor(d / 7) + '주 ' + d % 7 + '일'],
+                                ['년·개월·일', `${Y}년 ${M}개월 ${D}일`]
+                            ]
+                        };
+                    }
+                },
+                {
+                    id: 'dday',
+                    name: 'D-Day',
+                    cat: '계산',
+                    icon: ic('<circle cx="12" cy="12" r="8.5"/><path d="M12 7v5l3 2"/>'),
+                    keys: 'dday d-day countdown anniversary 디데이 기념일 100일',
+                    desc: '목표일까지 남은 날이나 기념일(100일 등)을 계산해요.',
+                    fields: [
+                        { id: 't', t: 'date', h: 1, label: '목표일 / 시작일', v: TD },
+                        { id: 'b', t: 'date', h: 1, label: '기준일', v: TD },
+                        { id: 'c', t: 'chk', label: '당일을 1일로 세기 (기념일 계산)' }
+                    ],
+                    run(v) {
+                        if (!v.t || !v.b) return {};
+
+                        const T = P(v.t);
+                        const d = (T - P(v.b)) / DAY;
+                        let big = d > 0 ? 'D-' + d : d === 0 ? 'D-Day' : 'D+' + -d;
+
+                        if (v.c && d <= 0) big = (1 - d) + '일째';
+
+                        const s = [
+                            ['D-Day', big],
+                            ['목표일 요일', dow(T)],
+                            ['차이', fmt(Math.abs(d)) + '일' + (d > 0 ? ' 남음' : d < 0 ? ' 지남' : '')]
+                        ];
+
+                        if (v.c) [100, 200, 300, 500, 1000].forEach(n => s.push([n + '일째 날', fd(T + (n - 1) * DAY)]));
+                        return { stats: s };
+                    }
+                },
+                {
+                    id: 'random-number',
+                    name: '랜덤 숫자',
+                    cat: '랜덤',
+                    icon: ic('<rect x="4" y="4" width="16" height="16" rx="3"/><circle cx="9" cy="9" r="1"/><circle cx="15" cy="15" r="1"/><circle cx="12" cy="12" r="1"/>'),
+                    keys: 'random number lottery dice 랜덤 난수 추첨 로또',
+                    desc: '범위를 정해 무작위 숫자를 뽑아요.',
+                    btn: '다시 뽑기',
+                    fields: [
+                        { id: 'lo', h: 1, label: '최솟값', v: 1 },
+                        { id: 'hi', h: 1, label: '최댓값', v: 100 },
+                        { id: 'n', h: 1, label: '개수', v: 1 },
+                        { id: 'd', t: 'chk', h: 1, label: '중복 허용', v: 1 }
+                    ],
+                    run(v) {
+                        if ([v.lo, v.hi, v.n].some(isNaN)) return {};
+                        if (![v.lo, v.hi, v.n].every(Number.isInteger)) return { err: '정수를 입력해 주세요.' };
+                        if (v.lo > v.hi) return { err: '최솟값이 최댓값보다 클 수 없어요.' };
+
+                        const R = v.hi - v.lo + 1;
+                        if (R > 4294967295) return { err: '범위가 너무 커요.' };
+                        if (v.n < 1 || v.n > 1000) return { err: '개수는 1~1000 사이로 입력해 주세요.' };
+                        if (!v.d && v.n > R) return { err: '중복 없이 뽑으려면 범위가 개수보다 커야 해요.' };
+
+                        const o = [];
+                        const seen = new Set();
+
+                        while (o.length < v.n) {
+                            const x = v.lo + randInt(R);
+                            if (!v.d) {
+                                if (seen.has(x)) continue;
+                                seen.add(x);
+                            }
+                            o.push(x);
+                        }
+
+                        return { out: o.join(', '), n: 3 };
+                    }
+                },
+                {
+                    id: 'random-string',
+                    name: '랜덤 문자열',
+                    cat: '랜덤',
+                    icon: ic('<path d="M12 4v16"/><path d="M5.2 8l13.6 8"/><path d="M18.8 8L5.2 16"/>'),
+                    keys: 'random string password generator 비밀번호 임의 문자열',
+                    desc: '비밀번호로 쓸 수 있는 무작위 문자열을 만들어요.',
+                    btn: '새로 만들기',
+                    fields: [
+                        { id: 'n', t: 'range', label: '길이:', min: 8, max: 64, v: 16 },
+                        { id: 'u', t: 'chk', h: 1, label: '대문자', v: 1 },
+                        { id: 'l', t: 'chk', h: 1, label: '소문자', v: 1 },
+                        { id: 'd', t: 'chk', h: 1, label: '숫자', v: 1 },
+                        { id: 's', t: 'chk', h: 1, label: '기호', v: 1 }
+                    ],
+                    run(v) {
+                        const a = ['u', 'l', 'd', 's'].filter(k => v[k]).map(k => SETS[k]);
+                        if (!a.length) return { err: '문자 종류를 하나 이상 선택해 주세요.' };
+
+                        const all = a.join('');
+                        const c = a.map(s => s[randInt(s.length)]);
+                        while (c.length < v.n) c.push(all[randInt(all.length)]);
+
+                        for (let i = c.length - 1; i > 0; i--) {
+                            const j = randInt(i + 1);
+                            [c[i], c[j]] = [c[j], c[i]];
+                        }
+
+                        return { out: c.join(''), n: 2 };
+                    }
+                },
+                {
+                    id: 'color-convert',
+                    name: '색상 변환',
+                    cat: '디자인',
+                    icon: ic('<path d="M12 3a9 9 0 1 0 0 18c1.1 0 1.6-.8 1.6-1.6 0-.5-.2-.8-.5-1.2-.3-.4-.5-.7-.5-1.2 0-.9.7-1.6 1.6-1.6H16a5 5 0 0 0 5-5c0-4.4-4-7.4-9-7.4z"/><circle cx="7.5" cy="11" r="1"/><circle cx="10.5" cy="7" r="1"/><circle cx="15.5" cy="7.5" r="1"/>'),
+                    keys: 'color hex rgb hsl converter 색상 컬러',
+                    desc: 'HEX, RGB, HSL 색상 코드를 서로 바꿔 줘요.',
+                    render: colorTool
+                },
+                {
+                    id: 'px-rem',
+                    name: 'px / rem 변환',
+                    cat: '디자인',
+                    icon: ic('<path d="M4 9V4h5M20 15v5h-5M4 4l6 6M20 20l-6-6"/>'),
+                    keys: 'px rem css font size 픽셀 렘 글자 크기',
+                    desc: 'CSS의 px과 rem 값을 서로 바꿔요.',
+                    fields: [
+                        { id: 'm', t: 'sel', label: '방향', o: ['px → rem', 'rem → px'] },
+                        { id: 'x', h: 1, label: '값', v: 24 },
+                        { id: 'b', h: 1, label: '기준 글자 크기 (px)', v: 16 }
+                    ],
+                    run(v) {
+                        if (isNaN(v.x) || !(v.b > 0)) return {};
+
+                        return {
+                            list: [['결과', v.m === 0 ? fmt(v.x / v.b) + 'rem' : fmt(v.x * v.b) + 'px']],
+                            stats: [8, 12, 14, 16, 18, 20, 24, 32, 48].map(p => [p + 'px', fmt(p / v.b) + 'rem'])
+                        };
+                    }
+                },
+                {
+                    id: 'uuid',
+                    name: 'UUID 생성',
+                    cat: '개발',
+                    icon: ic('<path d="M5 9h14M5 15h14M10 4L8 20M16 4l-2 16"/>'),
+                    keys: 'uuid guid generator v4 고유 식별자',
+                    desc: '무작위 UUID(v4)를 원하는 만큼 만들어요.',
+                    btn: '새로 만들기',
+                    fields: [
+                        { id: 'n', h: 1, label: '개수', v: 1 },
+                        { id: 'up', t: 'chk', h: 1, label: '대문자' },
+                        { id: 'nh', t: 'chk', h: 1, label: '하이픈 제거' }
+                    ],
+                    run(v) {
+                        if (!(Number.isInteger(v.n) && v.n >= 1 && v.n <= 100)) return { err: '개수는 1~100 사이 정수로 입력해 주세요.' };
+
+                        let o = Array.from({ length: v.n }, uid);
+                        if (v.nh) o = o.map(x => x.replace(/-/g, ''));
+                        if (v.up) o = o.map(x => x.toUpperCase());
+
+                        return { out: o.join('\n'), n: Math.min(o.length + 1, 10) };
+                    }
+                }
+            ];
+
+            /* ---- 화면 ---- */
+            const CATS = ['전체', '즐겨찾기', ...new Set(TOOLS.map(t => t.cat))];
+            let favs = new Set();
+
+            try {
+                favs = new Set(JSON.parse(ls('toolbox:favs') || '[]'));
+            } catch (e) {}
+
+            const S = { q: '', cat: '전체', cur: null };
+            const STAR = on => `<svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M12 3.5l2.6 5.3 5.9.9-4.3 4.1 1 5.8L12 16.9 6.8 19.6l1-5.8-4.3-4.1 5.9-.9z" fill="${on ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>`;
+
+            const chips = () => {
+                $('#chips').innerHTML = CATS.map(c => `<button class="chip" type="button" data-cat="${c}" aria-pressed="${S.cat === c}">${c}</button>`).join('');
+            };
+
+            function grid() {
+                const q = S.q.trim().toLowerCase();
+                const L = TOOLS.filter(t =>
+                    (S.cat !== '즐겨찾기' || favs.has(t.id))
+                    && (['전체', '즐겨찾기'].includes(S.cat) || t.cat === S.cat)
+                    && (!q || (t.name + ' ' + t.desc + ' ' + t.cat + ' ' + t.keys).toLowerCase().includes(q))
+                );
+
+                $('#count').textContent = (q || S.cat !== '전체')
+                    ? `${L.length}개의 도구`
+                    : `도구 ${TOOLS.length}개 사용 가능`;
+
+                $('#grid').innerHTML = L.length
+                    ? L.map(t => {
+                        const on = favs.has(t.id);
+
+                        return `<article class="card"><button class="open" type="button" data-id="${t.id}"><div class="icon">${t.icon}</div><div class="nr"><span class="name">${t.name}</span><span class="tag">${t.cat}</span></div><p class="desc">${t.desc}</p><span class="go">도구 열기 ${ARROW}</span></button><button class="star" type="button" data-fav="${t.id}" aria-pressed="${on}" aria-label="${t.name} ${on ? '즐겨찾기에서 빼기' : '즐겨찾기에 추가'}">${STAR(on)}</button></article>`;
+                    }).join('')
+                    : `<p class="empty" style="grid-column:1/-1">${S.cat === '즐겨찾기' && !q ? '즐겨찾기한 도구가 없어요. 카드 오른쪽 위의 별을 눌러 추가해 보세요.' : '찾는 도구가 없어요. 다른 단어로 검색해 보세요.'}</p>`;
+            }
+
+            function show() {
+                const t = TOOLS.find(x => x.id === S.cur);
+
+                if (!t) {
+                    S.cur = null;
+                    $('#tool').hidden = true;
+                    $('#home').hidden = false;
+                    document.title = '미니 도구 상자';
+                    grid();
+                    return;
+                }
+
+                $('#home').hidden = true;
+                $('#tool').hidden = false;
+                $('#tt').textContent = t.name;
+                $('#td').textContent = t.desc;
+
+                const b = $('#tb');
+                b.innerHTML = '';
+                t.render ? t.render(b) : form(b, t);
+                document.title = t.name + ' · 미니 도구 상자';
+                scrollTo(0, 0);
+            }
+
+            function go(id) {
+                S.cur = id;
+                try {
+                    location.hash = id ? '/' + id : '';
+                } catch (e) {}
+                show();
+            }
+
+            const hid = () => {
+                const m = (location.hash || '').match(/^#\/([\w-]+)$/);
+                return m ? m[1] : null;
+            };
+
+            const home = () => {
+                S.q = '';
+                S.cat = '전체';
+                $('#q').value = '';
+                chips();
+                go(null);
+            };
+
+            $('#q').addEventListener('input', e => {
+                S.q = e.target.value;
+                S.cur ? go(null) : grid();
+            });
+
+            document.addEventListener('keydown', e => {
+                if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
+                    e.preventDefault();
+                    $('#q').focus();
+                }
+            });
+
+            $('#brand').addEventListener('click', home);
+            $('#navTools').addEventListener('click', home);
+
+            $('#chips').addEventListener('click', e => {
+                const b = e.target.closest('.chip');
+                if (!b) return;
+                S.cat = b.dataset.cat;
+                chips();
+                grid();
+            });
+
+            $('#grid').addEventListener('click', e => {
+                const s = e.target.closest('.star');
+
+                if (s) {
+                    const id = s.dataset.fav;
+                    favs.has(id) ? favs.delete(id) : favs.add(id);
+                    ls('toolbox:favs', JSON.stringify([...favs]));
+                    grid();
+                    return;
+                }
+
+                const o = e.target.closest('.open');
+                if (o) go(o.dataset.id);
+            });
+
+            $('#back').addEventListener('click', () => go(null));
+
+            addEventListener('hashchange', () => {
+                const id = hid();
+                if (id === S.cur) return;
+                S.cur = id;
+                show();
+            });
+
+            $('#theme').addEventListener('click', () => {
+                const r = document.documentElement;
+                const n = r.dataset.theme === 'dark' ? 'light' : 'dark';
+                r.dataset.theme = n;
+                ls('toolbox:theme', n);
+            });
+
+            chips();
+            S.cur = hid();
+            show();
+        })();
+    </script>
 </body>
 </html>
